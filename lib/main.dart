@@ -1,104 +1,43 @@
-import 'package:english_words/english_words.dart';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_note/generated/l10n.dart';
+import 'package:flutter_note/routes/home.dart';
+import 'package:flutter_note/widgets/function_w.dart';
 
-void main() => runApp(MyApp());
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-        title: "第一个",
-        theme: new ThemeData(
-          primaryColor: Colors.grey,
-        ),
-        home: new RandomWords());
-  }
+void main() {
+  runApp(const NoteApp());
+  // if (Platform.isAndroid) {
+  //   //设置Android头部的导航栏透明
+  //   SystemUiOverlayStyle systemUiOverlayStyle =
+  //       SystemUiOverlayStyle(statusBarColor: Colors.transparent);
+  //   SystemChrome.setSystemUIOverlayStyle(systemUiOverlayStyle);
+  // }
 }
 
-class RandomWords extends StatefulWidget {
-  @override
-  State<StatefulWidget> createState() {
-    return new RandomWordsState();
-  }
-}
+class NoteApp extends StatelessWidget {
+  const NoteApp({Key? key}) : super(key: key);
 
-class RandomWordsState extends State<RandomWords> {
-  final words = <WordPair>[];
-  final font = const TextStyle(fontSize: 18);
-  final favorite = new Set<WordPair>();
-
+  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
-      appBar: new AppBar(
-        title: new Text("试试"),
-        backgroundColor: Colors.grey,
-        actions: <Widget>[
-          new IconButton(icon: new Icon(Icons.list), onPressed: pushFavorite)
-        ],
-      ),
-      body: buildWords(),
-    );
-  }
-
-  void pushFavorite() {
-    Navigator.of(context).push(new MaterialPageRoute(builder: (context) {
-      final tiles = favorite.map((wordPair) {
-        return new ListTile(
-          title: new Text(
-            wordPair.asPascalCase,
-            style: font,
-          ),
-        );
-      });
-      final marked =
-          ListTile.divideTiles(context: context, tiles: tiles).toList();
-
-      return new Scaffold(
-        appBar: new AppBar(
-          title: new Text("试一下"),
-        ),
-        body: new ListView(
-          children: marked,
-        ),
-      );
-    }));
-  }
-
-  Widget buildWords() {
-    return new ListView.builder(itemBuilder: (context, i) {
-      if (i.isOdd)
-        return new Divider(
-          color: Colors.amber,
-        );
-      final index = i ~/ 2;
-      if (index >= words.length) {
-        words.addAll(generateWordPairs().take(10));
-      }
-      return buildRow(index, words[index]);
-    });
-  }
-
-  Widget buildRow(int index, WordPair wordPair) {
-    final saved = favorite.contains(wordPair);
-    return new ListTile(
-        title: new Text(
-          wordPair.asPascalCase,
-          style: font,
-        ),
-        leading: new Text("$index"),
-        trailing: new Icon(
-          saved ? Icons.favorite : Icons.favorite_border,
-          color: saved ? Colors.red : Colors.grey,
-        ),
-        onTap: () {
-          setState(() {
-            if (saved) {
-              favorite.remove(wordPair);
-            } else {
-              favorite.add(wordPair);
-            }
-          });
-        });
+    return RestartWidget(
+        child: MaterialApp(
+      localizationsDelegates: const [
+        // 本地化的代理类
+        S.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+      ],
+      supportedLocales: S.delegate.supportedLocales,
+      title: "Flutter Note",
+      // theme: ThemeData(
+      //   primarySwatch: Colors.blue,
+      // ),
+      home: const HomeRoute(title: 'Home'),
+    ));
   }
 }
