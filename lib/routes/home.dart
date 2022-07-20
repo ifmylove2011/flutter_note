@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_note/generated/l10n.dart';
+import 'package:flutter_note/widgets/joke_data.dart';
 import 'package:flutter_note/widgets/new_data.dart';
 import 'package:flutter_note/widgets/note_data.dart';
 
@@ -37,14 +38,13 @@ class _HomeRouteState extends State<HomeRoute> {
           mainAxisAlignment: MainAxisAlignment.spaceAround, //均分底部导航栏横向空间
         ),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            // NoteList(),
-            NewsList()
-          ],
-        ),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[
+          // NoteList(),
+          // NewsList(),
+          JokeList(),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: addNote,

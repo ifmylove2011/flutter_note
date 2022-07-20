@@ -3,26 +3,25 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_note/common/model/convert.dart';
-import 'package:flutter_note/common/model/juhe/news.dart';
-import 'package:flutter_note/common/model/juhe/res_juhe.dart';
-import 'package:flutter_note/common/model/juhe/result.dart';
-import 'package:flutter_note/common/model/note.dart';
+import 'package:flutter_note/common/model/joke/juhe_joke/joke.dart';
+import 'package:flutter_note/common/model/joke/juhe_joke/juhe_res.dart';
+import 'package:flutter_note/common/model/joke/juhe_joke/result.dart';
 import 'package:flutter_note/widgets/derate.dart';
 
-class NewsList extends StatefulWidget {
+class JokeList extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return _NewsListState();
+    return _JokeListState();
   }
 }
 
-class _NewsListState extends State<NewsList> {
-  List<News> news = [];
+class _JokeListState extends State<JokeList> {
+  List<Joke> jokes = [];
 
   @override
   void initState() {
     super.initState();
-    requestNote();
+    requestJoke();
   }
 
   @override
@@ -38,7 +37,8 @@ class _NewsListState extends State<NewsList> {
                       padding: EdgeInsets.symmetric(vertical: 20),
                       alignment: Alignment.center,
                       child: Text(
-                        news[index].title,
+                        textAlign: TextAlign.left,
+                        jokes[index].content!.trimLeft(),
                         textScaleFactor: 2,
                       ),
                     )),
@@ -47,28 +47,23 @@ class _NewsListState extends State<NewsList> {
             separatorBuilder: (BuildContext context, int index) {
               return d1;
             },
-            itemCount: news.length));
+            itemCount: jokes.length));
   }
 
-  void requestNote() async {
+  void requestJoke() async {
     Future(() async {
-      //TODO 请求
-      return await rootBundle.loadString("/data/news.json");
+      return await rootBundle.loadString("/data/jokes.json");
     }).then((value) {
-      //TODO 赋值
-      // Note note = JSON().fromJsonAs<Note>(json.decode(value));
-      // ResJuhe<ResultJuhe<News>> r = ResJuhe<ResultJuhe<News>>.fromJson(json.decode(value));
-      // ResJuhe<ResultJuhe<News>> r = JSON().fromJson(value,ResJuhe<ResultJuhe<News>>);
-      ResJuhe<ResultJuhe<News>> r =
-          JSON().fromJsonAs<ResJuhe<ResultJuhe<News>>>(value);
+      JuheResponse<Result<Joke>> r =
+          JSON().fromJsonAs<JuheResponse<Result<Joke>>>(value);
       setState(() {
-        news = r.result!.data!;
-        // print(news.length);
-        // JSON().toJson(news);
+        jokes = r.result!.data!;
+        print(jokes[2].content);
+        var s = JSON().toJson(jokes, false);
+        // print(s);
+        var jj = JSON().fromJson(s, Joke);
+        print(jj.length);
       });
     });
-    // Future.delayed(Duration(seconds: 2)).then((value) => {
-
-    // });
   }
 }
