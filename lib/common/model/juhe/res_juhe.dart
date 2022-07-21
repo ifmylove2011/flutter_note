@@ -2,14 +2,14 @@ import 'package:flutter_note/common/model/convert.dart';
 
 import 'result.dart';
 
-class ResJuhe<T> {
+class Response<T> {
   String? reason;
   T? result;
   int? errorCode;
 
-  ResJuhe({this.reason, this.result, this.errorCode});
+  Response({this.reason, this.result, this.errorCode});
 
-  factory ResJuhe.fromJson(Map<String, dynamic> json) => ResJuhe(
+  factory Response.fromJson(Map<String, dynamic> json) => Response(
         reason: json['reason'] as String?,
         result: json['result'] == null
             ? null

@@ -41,9 +41,9 @@ class _HomeRouteState extends State<HomeRoute> {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
-          // NoteList(),
+          NoteList(),
           // NewsList(),
-          JokeList(),
+          // JokeList(),
         ],
       ),
       floatingActionButton: FloatingActionButton(

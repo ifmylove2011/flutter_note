@@ -3,13 +3,13 @@ class Note {
   String title;
   String? abstractContent;
   String? content;
-  bool? isDelete;
-  bool? isUpdate;
-  bool? isFinish;
+  int? isDelete;
+  int? isUpdate;
+  int? isFinish;
   String? password;
   String? passwordHint;
   String? sourceUrl;
-  String? encrypted;
+  int? encrypted;
   String? createTime;
   String? updateTime;
   String? lastViewTime;
@@ -39,17 +39,17 @@ class Note {
   }
 
   factory Note.fromJson(Map<String, dynamic> json) => Note(
-        id: json['id'] as int,
+        id: json['_id'] as int,
         title: json['title'] as String,
         abstractContent: json['abstractContent'] as String?,
         content: json['content'] as String?,
-        isDelete: json['isDelete'] as bool?,
-        isUpdate: json['isUpdate'] as bool?,
-        isFinish: json['isFinish'] as bool?,
+        isDelete: json['isDelete'] as int?,
+        isUpdate: json['isUpdate'] as int?,
+        isFinish: json['isFinish'] as int?,
         password: json['password'] as String?,
         passwordHint: json['passwordHint'] as String?,
         sourceUrl: json['sourceUrl'] as String?,
-        encrypted: json['encrypted'] as String?,
+        encrypted: json['encrypted'] as int?,
         createTime: json['createTime'] as String?,
         updateTime: json['updateTime'] as String?,
         lastViewTime: json['lastViewTime'] as String?,

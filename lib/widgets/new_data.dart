@@ -6,7 +6,7 @@ import 'package:flutter_note/common/model/convert.dart';
 import 'package:flutter_note/common/model/juhe/news.dart';
 import 'package:flutter_note/common/model/juhe/res_juhe.dart';
 import 'package:flutter_note/common/model/juhe/result.dart';
-import 'package:flutter_note/common/model/note.dart';
+import 'package:flutter_note/common/model/django/note.dart';
 import 'package:flutter_note/widgets/derate.dart';
 
 class NewsList extends StatefulWidget {
@@ -59,8 +59,8 @@ class _NewsListState extends State<NewsList> {
       // Note note = JSON().fromJsonAs<Note>(json.decode(value));
       // ResJuhe<ResultJuhe<News>> r = ResJuhe<ResultJuhe<News>>.fromJson(json.decode(value));
       // ResJuhe<ResultJuhe<News>> r = JSON().fromJson(value,ResJuhe<ResultJuhe<News>>);
-      ResJuhe<ResultJuhe<News>> r =
-          JSON().fromJsonAs<ResJuhe<ResultJuhe<News>>>(value);
+      Response<ResultPage<News>> r =
+          JSON().fromJsonAs<Response<ResultPage<News>>>(value);
       setState(() {
         news = r.result!.data!;
         // print(news.length);

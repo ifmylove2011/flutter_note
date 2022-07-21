@@ -1,8 +1,8 @@
 import 'dart:convert';
 
-import 'package:flutter_note/common/model/joke/juhe_joke/joke.dart';
-import 'package:flutter_note/common/model/joke/juhe_joke/juhe_res.dart';
-import 'package:flutter_note/common/model/joke/juhe_joke/result.dart';
+import 'package:flutter_note/common/model/django/django.dart';
+import 'package:flutter_note/common/model/django/note.dart';
+import 'package:flutter_note/common/model/juhe/joke.dart';
 import 'package:flutter_note/common/model/juhe/news.dart';
 import 'package:flutter_note/common/model/juhe/res_juhe.dart';
 import 'package:flutter_note/common/model/juhe/result.dart';
@@ -26,16 +26,16 @@ class JSON {
     }
 
     switch (T) {
-      case JuheResponse<Result<Joke>>:
-        return JuheResponse<Result<Joke>>.fromJson(value) as T;
+      case Response<Result<Joke>>:
+        return Response<Result<Joke>>.fromJson(value) as T;
       case Result<Joke>:
         return Result<Joke>.fromJson(value) as T;
       case Joke:
         return Joke.fromJson(value) as T;
-      case ResJuhe<ResultJuhe<News>>:
-        return ResJuhe<ResultJuhe<News>>.fromJson(value) as T;
-      case ResultJuhe<News>:
-        return ResultJuhe<News>.fromJson(value) as T;
+      case Response<ResultPage<News>>:
+        return Response<ResultPage<News>>.fromJson(value) as T;
+      case ResultPage<News>:
+        return ResultPage<News>.fromJson(value) as T;
       case News:
         return News.fromJson(value) as T;
       default:
@@ -48,35 +48,44 @@ class JSON {
   dynamic fromJson(dynamic content, Type type) {
     var value;
     if (content is String) {
+      print("content is String ,type=$type");
       //字符串需经过json解码为map格式
       value = json.decode(content);
       if (value is List) {
         return fromJson(value, type);
       }
     } else if (content is Map<String, dynamic>) {
+      print("content is Map ,type=$type");
       //map形式直接使用
       value = content;
     } else if (content is List) {
-      //List则嵌套调用自身即可
-      if (type == List) {
-        throw const FormatException("type must be single model");
-      }
-      return content.map((e) => {fromJson(e, type)}).toList();
+      print("content is List ,type=$type");
+      value = content;
     } else {
       throw const FormatException("content is not json format");
     }
 
     switch (type) {
-      case JuheResponse<Result<Joke>>:
-        return JuheResponse<Result<Joke>>.fromJson(value);
+      case Django<List<Note>>:
+        return Django<List<Note>>.fromJson(value);
+      case List<Note>:
+        return (value as List).map<Note>((e) => fromJson(e, Note)).toList();
+      case Note:
+        return Note.fromJson(value);
+      case Response<Result<Joke>>:
+        return Response<Result<Joke>>.fromJson(value);
       case Result<Joke>:
         return Result<Joke>.fromJson(value);
+      case List<Joke>:
+        return (value as List).map<Joke>((e) => fromJson(e, Joke)).toList();
       case Joke:
         return Joke.fromJson(value);
-      case ResJuhe<ResultJuhe<News>>:
-        return ResJuhe<ResultJuhe<News>>.fromJson(value);
-      case ResultJuhe<News>:
-        return ResultJuhe<News>.fromJson(value);
+      case Response<ResultPage<News>>:
+        return Response<ResultPage<News>>.fromJson(value);
+      case ResultPage<News>:
+        return ResultPage<News>.fromJson(value);
+      case List<News>:
+        return (value as List).map<News>((e) => fromJson(e, News)).toList();
       case News:
         return News.fromJson(value);
       default:
@@ -98,17 +107,17 @@ class JSON {
         case Result<Joke>:
           result = (data as Result<Joke>).toJson();
           break;
-        case JuheResponse<Result<Joke>>:
-          result = (data as JuheResponse<Result<Joke>>).toJson();
+        case Response<Result<Joke>>:
+          result = (data as Response<Result<Joke>>).toJson();
           break;
         case News:
           result = (data as News).toJson();
           break;
-        case ResultJuhe<News>:
-          result = (data as ResultJuhe<News>).toJson();
+        case ResultPage<News>:
+          result = (data as ResultPage<News>).toJson();
           break;
-        case ResJuhe<ResultJuhe<News>>:
-          result = (data as ResJuhe<ResJuhe<News>>).toJson();
+        case Response<ResultPage<News>>:
+          result = (data as Response<Response<News>>).toJson();
           break;
         default:
           print("no model provided toJson");

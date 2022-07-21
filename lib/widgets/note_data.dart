@@ -1,6 +1,10 @@
 import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_note/common/model/note.dart';
+import 'package:flutter_note/common/model/convert.dart';
+import 'package:flutter_note/common/model/django/django.dart';
+import 'package:flutter_note/common/model/django/note.dart';
+import 'package:flutter_note/common/net/dio_request.dart';
+import 'package:flutter_note/common/net/note_service.dart';
 import 'package:flutter_note/widgets/derate.dart';
 
 class NoteList extends StatefulWidget {
@@ -12,11 +16,10 @@ class NoteList extends StatefulWidget {
 
 class _NoteListState extends State<NoteList> {
   List<Note> notes = [];
-  List<String> words = [];
   @override
   void initState() {
-    super.initState();
     requestNote();
+    super.initState();
   }
 
   @override
@@ -32,8 +35,8 @@ class _NoteListState extends State<NoteList> {
                       padding: EdgeInsets.symmetric(vertical: 20),
                       alignment: Alignment.center,
                       child: Text(
-                        words[index],
-                        textScaleFactor: 2,
+                        notes[index].title,
+                        textScaleFactor: 1.5,
                       ),
                     )),
               );
@@ -41,23 +44,27 @@ class _NoteListState extends State<NoteList> {
             separatorBuilder: (BuildContext context, int index) {
               return d1;
             },
-            itemCount: words.length));
+            itemCount: notes.length));
   }
 
-  void requestNote() async {
-    // Future(() {
-    //   //TODO 请求
-    // })
-    //     .then((value) {
-    //   //TODO 赋值
-    // });
-    Future.delayed(Duration(seconds: 1)).then((value) {
-      setState(() {
-        words.insertAll(
-          0,
-          generateWordPairs().take(10).map((e) => e.asPascalCase).toList(),
-        );
-      });
+  void requestNote() {
+    Future(() async {
+      //TODO 请求
+      return await NoteService.getAllNote();
+    }).then((value) {
+      //TODO 赋值
+      notes = value!;
+      setState(() {});
+    }).catchError((error) {
+      print(error);
     });
+    // Future.delayed(Duration(seconds: 1)).then((value) {
+    //   setState(() {
+    //     words.insertAll(
+    //       0,
+    //       generateWordPairs().take(10).map((e) => e.asPascalCase).toList(),
+    //     );
+    //   });
+    // });
   }
 }

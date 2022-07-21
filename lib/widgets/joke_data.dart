@@ -3,9 +3,9 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_note/common/model/convert.dart';
-import 'package:flutter_note/common/model/joke/juhe_joke/joke.dart';
-import 'package:flutter_note/common/model/joke/juhe_joke/juhe_res.dart';
-import 'package:flutter_note/common/model/joke/juhe_joke/result.dart';
+import 'package:flutter_note/common/model/juhe/joke.dart';
+import 'package:flutter_note/common/model/juhe/res_juhe.dart';
+import 'package:flutter_note/common/model/juhe/result.dart';
 import 'package:flutter_note/widgets/derate.dart';
 
 class JokeList extends StatefulWidget {
@@ -54,14 +54,14 @@ class _JokeListState extends State<JokeList> {
     Future(() async {
       return await rootBundle.loadString("/data/jokes.json");
     }).then((value) {
-      JuheResponse<Result<Joke>> r =
-          JSON().fromJsonAs<JuheResponse<Result<Joke>>>(value);
+      Response<Result<Joke>> r =
+          JSON().fromJsonAs<Response<Result<Joke>>>(value);
       setState(() {
         jokes = r.result!.data!;
         print(jokes[2].content);
         var s = JSON().toJson(jokes, false);
         // print(s);
-        var jj = JSON().fromJson(s, Joke);
+        var jj = JSON().fromJson(s, List<Joke>);
         print(jj.length);
       });
     });
