@@ -1,8 +1,8 @@
 import 'package:dio/dio.dart';
 
 class Config {
-  static const NOTE_URL = "http://192.168.21.103:5055";
-  static const TIME_OUT = 20000;
+  static const NOTE_URL = "http://192.168.21.102:5055";
+  static const TIME_OUT = 10000;
 
 }
 

@@ -26,6 +26,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "bookmark": MessageLookupByLibrary.simpleMessage("Bookmark"),
         "favorite": MessageLookupByLibrary.simpleMessage("Favorite"),
         "home": MessageLookupByLibrary.simpleMessage("Home"),
+        "settings": MessageLookupByLibrary.simpleMessage("Settings"),
         "subTitle": MessageLookupByLibrary.simpleMessage("Note"),
         "title": MessageLookupByLibrary.simpleMessage("Home")
       };

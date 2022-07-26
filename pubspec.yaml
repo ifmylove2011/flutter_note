@@ -52,6 +52,8 @@ dependencies:
   
   english_words: ^4.0.0
 
+  flutter_html: ^2.2.1
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

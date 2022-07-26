@@ -26,6 +26,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "bookmark": MessageLookupByLibrary.simpleMessage("书签"),
         "favorite": MessageLookupByLibrary.simpleMessage("收藏"),
         "home": MessageLookupByLibrary.simpleMessage("首页"),
+        "settings": MessageLookupByLibrary.simpleMessage("设置"),
         "subTitle": MessageLookupByLibrary.simpleMessage("笔记"),
         "title": MessageLookupByLibrary.simpleMessage("首页")
       };
