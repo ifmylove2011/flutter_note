@@ -5,5 +5,9 @@
     "about":"About",
     "settings":"Settings",
     "bookmark":"Bookmark",
-    "favorite":"Favorite"
+    "favorite":"Favorite",
+    "all_note":"All Notes",
+    "literal_note":"Literal",
+    "audio_note":"Audio",
+    "hyper_note":"Hyper"
 }

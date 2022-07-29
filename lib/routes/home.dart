@@ -1,3 +1,4 @@
+import 'package:flukit/flukit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_note/common/model/django/note.dart';
 import 'package:flutter_note/common/net/note_service.dart';
@@ -7,6 +8,7 @@ import 'package:flutter_note/widgets/derate.dart';
 import 'package:flutter_note/widgets/joke_data.dart';
 import 'package:flutter_note/widgets/new_data.dart';
 import 'package:flutter_note/widgets/note_data.dart';
+import 'package:flutter_note/widgets/popup.dart';
 
 class HomeRoute extends StatefulWidget {
   const HomeRoute({Key? key, required this.title}) : super(key: key);
@@ -19,7 +21,7 @@ class HomeRoute extends StatefulWidget {
 
 class _HomeRouteState extends State<HomeRoute> {
   List<Note> notes = [];
-
+  final ScaffoldKey = GlobalKey<ScaffoldState>();
   @override
   void initState() {
     requestNote();
@@ -29,22 +31,26 @@ class _HomeRouteState extends State<HomeRoute> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: ScaffoldKey,
       bottomNavigationBar: BottomAppBar(
         color: Colors.white,
         shape: CircularNotchedRectangle(), // 底部导航栏打一个圆形的洞
         child: Row(
           children: [
             IconButton(
-              icon: Icon(Icons.home),
+              icon: Icon(Icons.home, color: Colors.lightGreen),
               onPressed: () {
                 Navigator.of(context).pushReplacementNamed(RouteNames.ALL_NOTE);
               },
             ),
             SizedBox(), //中间位置空出
             IconButton(
-              icon: Icon(Icons.person),
+              icon: Icon(
+                Icons.person,
+                color: Colors.lightGreen,
+              ),
               onPressed: () {
-                Navigator.of(context).pushReplacementNamed(RouteNames.MINE);
+                Navigator.of(context).pushNamed(RouteNames.MINE);
               },
             ),
           ],
@@ -59,9 +65,9 @@ class _HomeRouteState extends State<HomeRoute> {
       //     // JokeList(),
       //   ],
       // ),
-      body: _nestedBody1(),
+      body: _nestedBody(),
       floatingActionButton: FloatingActionButton(
-        onPressed: addNote,
+        onPressed: showbottom,
         tooltip: 'add note',
         child: const Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
@@ -84,6 +90,68 @@ class _HomeRouteState extends State<HomeRoute> {
     }).catchError((error) {
       print(error);
     });
+  }
+
+  void showbottom() {
+    // Navigator.of(context).push(PopBottomMenu(
+    //     child: Container(
+    //   // alignment: Alignment.center,
+    //   constraints: BoxConstraints(maxWidth: 300, maxHeight: 150),
+    //   margin: EdgeInsets.only(bottom: kToolbarHeight * 1.5),
+    //   // decoration: bd1,
+    //   child: _topBars(),
+    // )));
+    Navigator.of(context).push(PopBottomMenu(
+        child: SizedBox(
+      child: Container(
+        color:Colors.white,
+        child: Swiper(
+        indicatorAlignment: AlignmentDirectional.bottomCenter,
+        speed: 400,
+        controller: SwiperController(initialPage: 1),
+        viewportFraction: 1.0,
+        indicator: RectangleSwiperIndicator(),
+        onChanged: (index) => debugPrint('$index'),
+        children: List.generate(10, (index) => index)
+            .map((e) => Text(e.toString()+"------"))
+            .toList(),
+      )),
+      width: 300,
+      height: 150,
+    )));
+  }
+
+  void showNNpop() {
+    Navigator.of(context).push(NNPopupRoute(
+        alignment: Alignment.bottomCenter,
+        onClick: () {},
+        child: Container(
+          // alignment: Alignment.center,
+          constraints: BoxConstraints(maxWidth: 300, maxHeight: 150),
+          margin: EdgeInsets.only(bottom: kToolbarHeight * 1.5),
+          decoration: bd1,
+          child: _topBars(),
+        )));
+  }
+
+  //TODO 后续看看是否能实现气泡式菜单
+  void showPopup() {
+    showModalBottomSheet(
+        context: context,
+        // useRootNavigator: true,
+        constraints: BoxConstraints(maxHeight: 200, minWidth: 800),
+        shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+        builder: (BuildContext context) {
+          return Container(
+            child: Column(
+              children: [
+                ElevatedButton(onPressed: () {}, child: Text("1")),
+                ElevatedButton(onPressed: () {}, child: Text("2")),
+              ],
+            ),
+          );
+        });
   }
 
   Widget _noteListView() {
@@ -121,12 +189,23 @@ class _HomeRouteState extends State<HomeRoute> {
         return <Widget>[
           // 实现 snap 效果
           SliverAppBar(
+            title: Text(S.current.all_note),
+            pinned: true,
+            stretch: true,
             floating: true,
             snap: true,
-            expandedHeight: 400,
-            forceElevated: innerBoxIsScrolled,
+            actions: [
+              IconButton(
+                  onPressed: _sort,
+                  icon: Icon(Icons.sort, color: Colors.lightGreen)),
+              IconButton(
+                  onPressed: _moreDialog,
+                  icon: Icon(Icons.more_vert, color: Colors.lightGreen)),
+            ],
+            expandedHeight: 150,
             flexibleSpace: FlexibleSpaceBar(
-              title: Text(S.current.home),
+              collapseMode: CollapseMode.pin,
+              background: _topBars(),
             ),
           ),
         ];
@@ -135,6 +214,7 @@ class _HomeRouteState extends State<HomeRoute> {
     );
   }
 
+  @Deprecated("wait for modify")
   Widget _nestedBody1() {
     return NestedScrollView(
       headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
@@ -164,6 +244,27 @@ class _HomeRouteState extends State<HomeRoute> {
           ],
         );
       }),
+    );
+  }
+
+  void _moreDialog() {}
+
+  void _sort() {}
+
+  void _addNote() {
+    print("wait for ...");
+  }
+
+  _topBars() {
+    return ListView(
+      // shrinkWrap: true,
+      padding:
+          const EdgeInsets.only(top: kToolbarHeight, left: 20.0, right: 20.0),
+      scrollDirection: Axis.horizontal,
+      children: [
+        card(Icons.article, S.current.literal_note, _addNote),
+        card(Icons.audio_file, S.current.audio_note, _addNote),
+      ],
     );
   }
 }

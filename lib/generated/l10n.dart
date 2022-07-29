@@ -119,6 +119,46 @@ class S {
       args: [],
     );
   }
+
+  /// `All Notes`
+  String get all_note {
+    return Intl.message(
+      'All Notes',
+      name: 'all_note',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Literal`
+  String get literal_note {
+    return Intl.message(
+      'Literal',
+      name: 'literal_note',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Audio`
+  String get audio_note {
+    return Intl.message(
+      'Audio',
+      name: 'audio_note',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Hyper`
+  String get hyper_note {
+    return Intl.message(
+      'Hyper',
+      name: 'hyper_note',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
