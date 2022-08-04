@@ -1,3 +1,14 @@
 {
-    "cmake.configureOnOpen": false
+    "cmake.configureOnOpen": false,
+    "cmake.sourceDirectory": "${workspaceFolder}/linux",
+    "workbench.activityBar.visible": true,
+    "workbench.colorCustomizations": {
+        "activityBar.activeBackground": "#1c2e3f", //#号后面是颜色代码,可以点击图标自行选择
+        "activityBar.background": "#1c2e3f",
+        "statusBar.background": "#1c2e3f",
+        "statusBarItem.remoteBackground": "#1c2e3f"
+    },
+    "debug.console.fontFamily": "迷你简行楷",
+    "editor.fontFamily": "Monaco,Consolas,Noto Mono",
+    "editor.fontSize": 14
 }

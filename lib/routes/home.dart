@@ -4,6 +4,7 @@ import 'package:flutter_note/common/model/django/note.dart';
 import 'package:flutter_note/common/net/note_service.dart';
 import 'package:flutter_note/generated/l10n.dart';
 import 'package:flutter_note/main.dart';
+import 'package:flutter_note/widgets/bubble.dart';
 import 'package:flutter_note/widgets/derate.dart';
 import 'package:flutter_note/widgets/joke_data.dart';
 import 'package:flutter_note/widgets/new_data.dart';
@@ -43,7 +44,7 @@ class _HomeRouteState extends State<HomeRoute> {
                 Navigator.of(context).pushReplacementNamed(RouteNames.ALL_NOTE);
               },
             ),
-            SizedBox(), //中间位置空出
+            // SizedBox(), //中间位置空出
             IconButton(
               icon: Icon(
                 Icons.person,
@@ -67,9 +68,14 @@ class _HomeRouteState extends State<HomeRoute> {
       // ),
       body: _nestedBody(),
       floatingActionButton: FloatingActionButton(
+        foregroundColor: Colors.white,
+        hoverColor: Colors.green,
+        backgroundColor: Colors.lightGreen,
         onPressed: showbottom,
         tooltip: 'add note',
-        child: const Icon(Icons.add),
+        child: const Icon(
+          Icons.add,
+        ),
       ), // This trailing comma makes auto-formatting nicer for build methods.
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
@@ -101,24 +107,31 @@ class _HomeRouteState extends State<HomeRoute> {
     //   // decoration: bd1,
     //   child: _topBars(),
     // )));
-    Navigator.of(context).push(PopBottomMenu(
-        child: SizedBox(
-      child: Container(
-        color:Colors.white,
-        child: Swiper(
-        indicatorAlignment: AlignmentDirectional.bottomCenter,
-        speed: 400,
-        controller: SwiperController(initialPage: 1),
-        viewportFraction: 1.0,
-        indicator: RectangleSwiperIndicator(),
-        onChanged: (index) => debugPrint('$index'),
-        children: List.generate(10, (index) => index)
-            .map((e) => Text(e.toString()+"------"))
-            .toList(),
-      )),
-      width: 300,
-      height: 150,
-    )));
+    Navigator.of(context).push(PopupFreeWindow(
+      child: ChatBubble(
+        direction: ArrowDirection.bottom,
+        backgroundColor: Colors.purple,
+        child: Text(
+          "你6666",
+          style: TextStyle(color: Colors.white),
+        ),
+      ),
+    ));
+  }
+
+  Widget _swiper() {
+    return Swiper(
+      indicatorAlignment: AlignmentDirectional.bottomCenter,
+      speed: 400,
+      autoStart: false,
+      controller: SwiperController(initialPage: 1),
+      viewportFraction: 1.0,
+      indicator: RectangleSwiperIndicator(),
+      onChanged: (index) => debugPrint('$index'),
+      children: List.generate(10, (index) => index)
+          .map((e) => Text(e.toString() + "------"))
+          .toList(),
+    );
   }
 
   void showNNpop() {
@@ -130,7 +143,7 @@ class _HomeRouteState extends State<HomeRoute> {
           constraints: BoxConstraints(maxWidth: 300, maxHeight: 150),
           margin: EdgeInsets.only(bottom: kToolbarHeight * 1.5),
           decoration: bd1,
-          child: _topBars(),
+          child: _swiper(),
         )));
   }
 

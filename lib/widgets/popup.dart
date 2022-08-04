@@ -151,24 +151,32 @@ class NNAlertDialog extends StatelessWidget {
   }
 }
 
-class PopBottomMenu extends PopupRoute {
-  final Duration _duration = Duration(milliseconds: 300);
+class PopupFreeWindow extends PopupRoute {
   final Widget child;
-  final EdgeInsets padding;
+
+  final Duration duration;
+  final EdgeInsets margin;
   final Alignment alignment;
   Color? outerBackgroudColor;
 
-  PopBottomMenu({
-    required this.child,
-    this.padding = const EdgeInsets.all(10.0),
-    this.alignment = Alignment.bottomCenter,
-  });
+  double widthFactor;
+  double heightFactor;
+
+  PopupFreeWindow(
+      {required this.child,
+      this.duration = const Duration(milliseconds: 300),
+      this.alignment = Alignment.bottomCenter,
+      this.margin =
+          const EdgeInsets.only(bottom: kBottomNavigationBarHeight * 1.5),
+      this.widthFactor = 0.95,
+      this.heightFactor = 0.3});
 
   @override
-  Color? get barrierColor => null;
+  Color? get barrierColor =>
+      outerBackgroudColor ?? Colors.black.withOpacity(0.3);
 
   @override
-  bool get barrierDismissible => false;
+  bool get barrierDismissible => true;
 
   @override
   String? get barrierLabel => null;
@@ -176,17 +184,17 @@ class PopBottomMenu extends PopupRoute {
   @override
   Widget buildPage(BuildContext context, Animation<double> animation,
       Animation<double> secondaryAnimation) {
-    final screenSize = MediaQuery.of(context).size;
-    return Container(
-      alignment: alignment,
-      color: outerBackgroudColor ?? Colors.black.withOpacity(0.3),
-      child: SafeArea(
-        child: child,
-        minimum: padding,
-      ),
-    );
+    return SafeArea(
+        child: FractionallySizedBox(
+            widthFactor: widthFactor,
+            heightFactor: heightFactor,
+            child: Container(
+              child: child,
+              margin: margin,
+            ),
+            alignment: alignment));
   }
 
   @override
-  Duration get transitionDuration => _duration;
+  Duration get transitionDuration => duration;
 }

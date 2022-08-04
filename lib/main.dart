@@ -28,6 +28,7 @@ class NoteApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return RestartWidget(
         child: MaterialApp(
+      debugShowCheckedModeBanner: false,
       localizationsDelegates: const [
         // 本地化的代理类
         S.delegate,
@@ -38,23 +39,22 @@ class NoteApp extends StatelessWidget {
       supportedLocales: S.delegate.supportedLocales,
       title: "Flutter Note",
       theme: ThemeData(
-        primarySwatch: GlobalConfig.white,
-        primaryColor: Colors.white
-        // primarySwatch: Colors.lightGreen,
-      ),
+          primarySwatch: GlobalConfig.white, primaryColor: Colors.white
+          // primarySwatch: Colors.lightGreen,
+          ),
       // home: const HomeRoute(title: 'Home'),
       initialRoute: RouteNames.ALL_NOTE,
       routes: {
-        RouteNames.ALL_NOTE:(context) => HomeRoute(title: 'Home'),
-        RouteNames.ADD_NOTE:(context) => AddNoteRoute(),
-        RouteNames.NOTE_DETAIL:(context) => NoteDetailRoute(),
-        RouteNames.MINE:(context) => MineRoute(),
+        RouteNames.ALL_NOTE: (context) => HomeRoute(title: 'Home'),
+        RouteNames.ADD_NOTE: (context) => AddNoteRoute(),
+        RouteNames.NOTE_DETAIL: (context) => NoteDetailRoute(),
+        RouteNames.MINE: (context) => MineRoute(),
       },
     ));
   }
 }
 
-class GlobalConfig{
+class GlobalConfig {
   static const int _primaryColorValue = 0xFFFFFFFF;
   static const Color primaryColor = Color(_primaryColorValue);
   static const MaterialColor primarySwatchColor = MaterialColor(
@@ -76,7 +76,7 @@ class GlobalConfig{
   static const MaterialColor white = MaterialColor(
     _whitePrimaryValue,
     <int, Color>{
-       50: Color(0xFFFFFFFF),
+      50: Color(0xFFFFFFFF),
       100: Color(0xFFFEFEFE),
       200: Color(0xFFFDFDFD),
       300: Color(0xFFFCFCFC),
@@ -89,10 +89,9 @@ class GlobalConfig{
     },
   );
   static const int _whitePrimaryValue = 0xFFFAFAFA;
-
 }
 
-class RouteNames{
+class RouteNames {
   static const ALL_NOTE = "all_note";
   static const ADD_NOTE = "add_note";
   static const NOTE_DETAIL = "note_detail";
