@@ -108,12 +108,21 @@ class _HomeRouteState extends State<HomeRoute> {
     //   child: _topBars(),
     // )));
     Navigator.of(context).push(PopupFreeWindow(
+      widthFactor: 0.95,
+      heightFactor: 0.2,
       child: ChatBubble(
-        direction: ArrowDirection.bottom,
-        backgroundColor: Colors.purple,
-        child: Text(
-          "你6666",
-          style: TextStyle(color: Colors.white),
+        direction: ArrowDirection.left,
+        arrowWidth: 20,
+        ratioHW: 0.7,
+        arrowBasisOffset: 0,
+        arrowPeakOffset: -0.8,
+        backgroundColor: Colors.white,
+        child: Container(
+          alignment: Alignment.centerLeft,
+          child: Text(
+            "图来",
+            style: TextStyle(color: Colors.black, inherit: false, fontSize: 18),
+          ),
         ),
       ),
     ));
