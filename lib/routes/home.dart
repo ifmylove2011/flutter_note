@@ -109,20 +109,24 @@ class _HomeRouteState extends State<HomeRoute> {
     // )));
     Navigator.of(context).push(PopupFreeWindow(
       widthFactor: 0.95,
-      heightFactor: 0.2,
+      heightFactor: 0.3,
       child: ChatBubble(
-        direction: ArrowDirection.left,
-        arrowWidth: 20,
-        ratioHW: 0.7,
-        arrowBasisOffset: 0,
-        arrowPeakOffset: -0.8,
-        backgroundColor: Colors.white,
+        // borderRadius: const Radius.circular(10.0),
+        direction: ArrowDirection.bottom,
+        arrowWidth: 30,
+        arrowHeight: 30,
+        // arrowWidthWeight: 0.1,
+        // arrowHeightWeight: 0.2,
+        // arrowBasisOffset: 0,
+        // arrowPeakOffset: 0.8,
+        conicWeight: 2,
+        // backgroundColor: Colors.white,
         child: Container(
           alignment: Alignment.centerLeft,
-          child: Text(
-            "图来",
-            style: TextStyle(color: Colors.black, inherit: false, fontSize: 18),
-          ),
+          // child: Text(
+          //   "图来",
+          //   style: TextStyle(color: Colors.black, inherit: false, fontSize: 18),
+          // ),
         ),
       ),
     ));
