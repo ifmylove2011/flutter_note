@@ -6,8 +6,13 @@
     "settings":"Settings",
     "bookmark":"Bookmark",
     "favorite":"Favorite",
+    "category":"Category",
     "all_note":"All Notes",
     "literal_note":"Literal",
     "audio_note":"Audio",
-    "hyper_note":"Hyper"
+    "hyper_note":"Hyper",
+    "recording":"Recording",
+    "camera":"Camera",
+    "alarm":"Alarm",
+    "attach":"Attach"
 }

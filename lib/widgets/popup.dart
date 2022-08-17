@@ -159,8 +159,11 @@ class PopupFreeWindow extends PopupRoute {
   final Alignment alignment;
   Color? outerBackgroudColor;
 
+  double width;
+  double height;
   double widthFactor;
   double heightFactor;
+  bool dismissable;
 
   PopupFreeWindow(
       {required this.child,
@@ -169,14 +172,17 @@ class PopupFreeWindow extends PopupRoute {
       this.margin =
           const EdgeInsets.only(bottom: kBottomNavigationBarHeight * 1.5),
       this.widthFactor = 0.95,
-      this.heightFactor = 0.3});
+      this.heightFactor = 0.3,
+      this.width = 0,
+      this.height = 0,
+      this.dismissable = true});
 
   @override
   Color? get barrierColor =>
       outerBackgroudColor ?? Colors.black.withOpacity(0.3);
 
   @override
-  bool get barrierDismissible => true;
+  bool get barrierDismissible => dismissable;
 
   @override
   String? get barrierLabel => null;
@@ -184,15 +190,32 @@ class PopupFreeWindow extends PopupRoute {
   @override
   Widget buildPage(BuildContext context, Animation<double> animation,
       Animation<double> secondaryAnimation) {
-    return SafeArea(
-        child: FractionallySizedBox(
-            widthFactor: widthFactor,
-            heightFactor: heightFactor,
-            child: Container(
-              child: child,
-              margin: margin,
-            ),
-            alignment: alignment));
+    Widget? content;
+    if (width > 0 && height >= 0) {
+      content = Container(
+        alignment: alignment,
+        margin: margin,
+        child: Container(
+          child: child,
+          width: width,
+          height: height,
+        ),
+      );
+    } else {
+      content = FractionallySizedBox(
+          widthFactor: widthFactor,
+          heightFactor: heightFactor,
+          child: Container(
+            child: child,
+            margin: margin,
+          ),
+          alignment: alignment);
+    }
+    return FadeTransition(
+        opacity: animation,
+        child: SafeArea(
+          child: content,
+        ));
   }
 
   @override

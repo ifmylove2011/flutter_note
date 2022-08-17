@@ -125,6 +125,7 @@ class ChatBubble extends StatelessWidget {
       return Container(
         color: backgroundColor,
         padding: _padding(),
+        alignment: _alignment(direction),
         child: child,
       );
     } else {
@@ -153,7 +154,7 @@ class ChatBubble extends StatelessWidget {
           arrowPeakOffset: arrowPeakOffset,
           conicWeight: conicWeight,
         ),
-        child: _container(),
+        child: Material(child: _container()),
       ),
     );
   }

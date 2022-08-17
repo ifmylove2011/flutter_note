@@ -6,10 +6,13 @@ import 'package:flutter_note/generated/l10n.dart';
 import 'package:flutter_note/main.dart';
 import 'package:flutter_note/widgets/bubble.dart';
 import 'package:flutter_note/widgets/derate.dart';
+import 'package:flutter_note/widgets/function_w.dart';
+import 'package:flutter_note/widgets/grid_menu.dart';
 import 'package:flutter_note/widgets/joke_data.dart';
 import 'package:flutter_note/widgets/new_data.dart';
 import 'package:flutter_note/widgets/note_data.dart';
 import 'package:flutter_note/widgets/popup.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
 class HomeRoute extends StatefulWidget {
   const HomeRoute({Key? key, required this.title}) : super(key: key);
@@ -22,7 +25,10 @@ class HomeRoute extends StatefulWidget {
 
 class _HomeRouteState extends State<HomeRoute> {
   List<Note> notes = [];
+  bool isMonsonry = false;
+
   final ScaffoldKey = GlobalKey<ScaffoldState>();
+
   @override
   void initState() {
     requestNote();
@@ -99,35 +105,21 @@ class _HomeRouteState extends State<HomeRoute> {
   }
 
   void showbottom() {
-    // Navigator.of(context).push(PopBottomMenu(
-    //     child: Container(
-    //   // alignment: Alignment.center,
-    //   constraints: BoxConstraints(maxWidth: 300, maxHeight: 150),
-    //   margin: EdgeInsets.only(bottom: kToolbarHeight * 1.5),
-    //   // decoration: bd1,
-    //   child: _topBars(),
-    // )));
+    final size = MediaQuery.of(context).size;
+    final width = size.width;
+    final height = size.height;
+    print("screen w=$width,h=$height");
     Navigator.of(context).push(PopupFreeWindow(
-      widthFactor: 0.95,
-      heightFactor: 0.3,
+      // widthFactor: 0.95,
+      // heightFactor: 0.4,
+      height: 200,
+      width: width - 30,
       child: ChatBubble(
-        // borderRadius: const Radius.circular(10.0),
         direction: ArrowDirection.bottom,
         arrowWidth: 30,
-        arrowHeight: 30,
-        // arrowWidthWeight: 0.1,
-        // arrowHeightWeight: 0.2,
-        // arrowBasisOffset: 0,
-        // arrowPeakOffset: 0.8,
-        conicWeight: 2,
-        // backgroundColor: Colors.white,
-        child: Container(
-          alignment: Alignment.centerLeft,
-          // child: Text(
-          //   "图来",
-          //   style: TextStyle(color: Colors.black, inherit: false, fontSize: 18),
-          // ),
-        ),
+        arrowHeight: 20,
+        conicWeight: 4.5,
+        child: GridMenu(),
       ),
     ));
   }
@@ -139,25 +131,12 @@ class _HomeRouteState extends State<HomeRoute> {
       autoStart: false,
       controller: SwiperController(initialPage: 1),
       viewportFraction: 1.0,
-      indicator: RectangleSwiperIndicator(),
+      indicator: CircleSwiperIndicator(),
       onChanged: (index) => debugPrint('$index'),
       children: List.generate(10, (index) => index)
           .map((e) => Text(e.toString() + "------"))
           .toList(),
     );
-  }
-
-  void showNNpop() {
-    Navigator.of(context).push(NNPopupRoute(
-        alignment: Alignment.bottomCenter,
-        onClick: () {},
-        child: Container(
-          // alignment: Alignment.center,
-          constraints: BoxConstraints(maxWidth: 300, maxHeight: 150),
-          margin: EdgeInsets.only(bottom: kToolbarHeight * 1.5),
-          decoration: bd1,
-          child: _swiper(),
-        )));
   }
 
   //TODO 后续看看是否能实现气泡式菜单
@@ -180,27 +159,49 @@ class _HomeRouteState extends State<HomeRoute> {
         });
   }
 
+  Widget _noteMasonryView() {
+    return SingleChildScrollView(
+      child: MasonryGridView.count(
+        // 展示几列
+        crossAxisCount: 3,
+        // 元素总个数
+        itemCount: notes.length,
+        // 单个子元素
+        itemBuilder: (BuildContext context, int index) => ContentCard(
+            title: notes[index].title,
+            content: notes[index].content,
+            tapFunc: () {}),
+        // 纵向元素间距
+        mainAxisSpacing: 10,
+        // 横向元素间距
+        crossAxisSpacing: 10,
+        //本身不滚动，让外面的singlescrollview来滚动
+        physics: const NeverScrollableScrollPhysics(),
+        shrinkWrap: true, //收缩，让元素宽度自适应
+      ),
+    );
+  }
+
   Widget _noteListView() {
     return ListView.separated(
         itemBuilder: (BuildContext context, int index) {
           return Padding(
             padding: EdgeInsets.all(10),
-            child: DecoratedBox(
+            child: InkWell(
+              child: Container(
                 decoration: bd1,
-                child: InkWell(
-                  child: Container(
-                    padding: EdgeInsets.symmetric(vertical: 20),
-                    alignment: Alignment.center,
-                    child: Text(
-                      notes[index].title,
-                      textScaleFactor: 1.5,
-                    ),
-                  ),
-                  onTap: () {
-                    Navigator.pushNamed(context, RouteNames.NOTE_DETAIL,
-                        arguments: notes[index]);
-                  },
-                )),
+                padding: EdgeInsets.symmetric(vertical: 20),
+                alignment: Alignment.center,
+                child: Text(
+                  notes[index].title,
+                  textScaleFactor: 1.5,
+                ),
+              ),
+              onTap: () {
+                Navigator.pushNamed(context, RouteNames.NOTE_DETAIL,
+                    arguments: notes[index]);
+              },
+            ),
           );
         },
         separatorBuilder: (BuildContext context, int index) {
@@ -222,8 +223,9 @@ class _HomeRouteState extends State<HomeRoute> {
             snap: true,
             actions: [
               IconButton(
-                  onPressed: _sort,
-                  icon: Icon(Icons.sort, color: Colors.lightGreen)),
+                  onPressed: _switchView,
+                  icon: Icon(isMonsonry ? Icons.grid_on : Icons.list,
+                      color: Colors.lightGreen)),
               IconButton(
                   onPressed: _moreDialog,
                   icon: Icon(Icons.more_vert, color: Colors.lightGreen)),
@@ -236,7 +238,7 @@ class _HomeRouteState extends State<HomeRoute> {
           ),
         ];
       },
-      body: _noteListView(),
+      body: isMonsonry ? _noteMasonryView() : _noteListView(),
     );
   }
 
@@ -275,7 +277,10 @@ class _HomeRouteState extends State<HomeRoute> {
 
   void _moreDialog() {}
 
-  void _sort() {}
+  void _switchView() {
+    isMonsonry = !isMonsonry;
+    setState(() {});
+  }
 
   void _addNote() {
     print("wait for ...");
@@ -288,8 +293,14 @@ class _HomeRouteState extends State<HomeRoute> {
           const EdgeInsets.only(top: kToolbarHeight, left: 20.0, right: 20.0),
       scrollDirection: Axis.horizontal,
       children: [
-        card(Icons.article, S.current.literal_note, _addNote),
-        card(Icons.audio_file, S.current.audio_note, _addNote),
+        MenuCard(
+            icon: Icons.article,
+            text: S.current.literal_note,
+            tapFunc: _addNote),
+        MenuCard(
+            icon: Icons.audio_file,
+            text: S.current.audio_note,
+            tapFunc: _addNote),
       ],
     );
   }

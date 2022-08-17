@@ -120,6 +120,16 @@ class S {
     );
   }
 
+  /// `Category`
+  String get category {
+    return Intl.message(
+      'Category',
+      name: 'category',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `All Notes`
   String get all_note {
     return Intl.message(
@@ -155,6 +165,46 @@ class S {
     return Intl.message(
       'Hyper',
       name: 'hyper_note',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Recording`
+  String get recording {
+    return Intl.message(
+      'Recording',
+      name: 'recording',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Camera`
+  String get camera {
+    return Intl.message(
+      'Camera',
+      name: 'camera',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Alarm`
+  String get alarm {
+    return Intl.message(
+      'Alarm',
+      name: 'alarm',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Attach`
+  String get attach {
+    return Intl.message(
+      'Attach',
+      name: 'attach',
       desc: '',
       args: [],
     );
