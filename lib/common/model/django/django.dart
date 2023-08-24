@@ -1,4 +1,3 @@
-
 import 'package:flutter_note/common/model/convert.dart';
 
 import 'note.dart';

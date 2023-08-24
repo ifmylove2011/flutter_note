@@ -10,5 +10,6 @@
     },
     "debug.console.fontFamily": "迷你简行楷",
     "editor.fontFamily": "Monaco,Consolas,Noto Mono",
-    "editor.fontSize": 14
+    "editor.fontSize": 14,
+    "java.configuration.updateBuildConfiguration": "interactive"
 }

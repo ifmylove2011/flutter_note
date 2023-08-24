@@ -7,7 +7,9 @@ import 'package:flutter_note/common/model/django/note.dart';
 import 'package:flutter_note/common/net/dio_request.dart';
 import 'package:flutter_note/common/net/note_service.dart';
 import 'package:flutter_note/main.dart';
+import 'package:flutter_note/routes/note_detail.dart';
 import 'package:flutter_note/widgets/derate.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class NoteList extends StatefulWidget {
   @override
@@ -18,6 +20,8 @@ class NoteList extends StatefulWidget {
 
 class _NoteListState extends State<NoteList> {
   List<Note> notes = [];
+  int currentIndex = 0;
+
   @override
   void initState() {
     requestNote();
@@ -42,8 +46,12 @@ class _NoteListState extends State<NoteList> {
                           textScaleFactor: 1.5,
                         ),
                       ),
-                      onTap: (){
-                        Navigator.pushNamed(context, RouteNames.NOTE_DETAIL,arguments: notes[index]);
+                      onTap: () {
+                        Navigator.pushNamed(context, RouteNames.NOTE_DETAIL,
+                                arguments: notes[index])
+                            .then((value) {
+                          print("--------$value");
+                        });
                       },
                     )),
               );

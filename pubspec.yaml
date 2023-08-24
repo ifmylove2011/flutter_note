@@ -18,7 +18,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.17.5 <3.0.0"
+  sdk: '>=3.0.0 <4.0.0'
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -34,29 +34,39 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.4
 
-  flutter_cache_manager: ^3.3.0
+  # flutter_cache_manager: ^3.3.1
 
-  palette_generator: ^0.3.2
+  palette_generator: ^0.3.3
 
-  video_player: ^2.2.17
+  video_player: ^2.7.0
 
-  dio: ^4.0.4
+  dio: ^5.3.2
 
-  fluttertoast: ^8.0.8
+  fluttertoast: ^8.2.2
 
-  cached_network_image: ^3.2.0
+  cached_network_image: ^3.2.3
 
-  shared_preferences: ^2.0.13
+  shared_preferences: ^2.2.0
 
-  intl: ^0.17.0
+  intl: ^0.18.1
   
   english_words: ^4.0.0
 
-  flutter_html: ^2.2.1
+  flutter_html: ^3.0.0-alpha.6
 
   flukit: ^3.0.1
+  
+  flutter_staggered_grid_view: ^0.7.0
 
-  flutter_staggered_grid_view: ^0.6.2
+  ffigen: ^8.0.2
+
+  http: ^1.1.0
+
+
+dependency_overrides:
+  flutter_layout_grid: ^2.0.4
+  file: ^6.1.4
+  flutter_math_fork: ^0.7.1
 
 dev_dependencies:
   flutter_test:
@@ -68,9 +78,15 @@ dev_dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^2.0.0
+  flutter_lints: ^2.0.2
 
-
+ffigen:
+  output: 'lib/cpp/bin/generated_bindings.dart'
+  name: 'TestCpp'
+  description: "test ffi"
+  headers:
+    entry-points:
+      - 'lib/cpp/test_cpp.h'
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 # The following section is specific to Flutter packages.
@@ -81,9 +97,9 @@ flutter:
   # the material Icons class.
   uses-material-design: true
   # To add assets to your application, add an assets section, like this:
-  # assets:
-  #   - images/a_dot_burr.jpeg
-  #   - images/a_dot_ham.jpeg
+  assets:
+    - assets/images/
+    - assets/data/
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
   # For details regarding adding assets from package dependencies, see

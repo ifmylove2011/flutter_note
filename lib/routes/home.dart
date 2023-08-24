@@ -1,10 +1,13 @@
 import 'package:flukit/flukit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_note/common/constant.dart';
+import 'package:flutter_note/common/model/arguments/notes_index.dart';
 import 'package:flutter_note/common/model/django/note.dart';
 import 'package:flutter_note/common/net/note_service.dart';
 import 'package:flutter_note/generated/l10n.dart';
 import 'package:flutter_note/main.dart';
 import 'package:flutter_note/widgets/bubble.dart';
+import 'package:flutter_note/widgets/bulletin_data.dart';
 import 'package:flutter_note/widgets/derate.dart';
 import 'package:flutter_note/widgets/function_w.dart';
 import 'package:flutter_note/widgets/grid_menu.dart';
@@ -31,7 +34,7 @@ class _HomeRouteState extends State<HomeRoute> {
 
   @override
   void initState() {
-    requestNote();
+    // requestNote();
     super.initState();
   }
 
@@ -41,18 +44,19 @@ class _HomeRouteState extends State<HomeRoute> {
       key: ScaffoldKey,
       bottomNavigationBar: BottomAppBar(
         color: Colors.white,
-        shape: CircularNotchedRectangle(), // 底部导航栏打一个圆形的洞
+        shape: const CircularNotchedRectangle(), // 底部导航栏打一个圆形的洞
         child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             IconButton(
-              icon: Icon(Icons.home, color: Colors.lightGreen),
+              icon: const Icon(Icons.home, color: Colors.lightGreen),
               onPressed: () {
                 Navigator.of(context).pushReplacementNamed(RouteNames.ALL_NOTE);
               },
             ),
             // SizedBox(), //中间位置空出
             IconButton(
-              icon: Icon(
+              icon: const Icon(
                 Icons.person,
                 color: Colors.lightGreen,
               ),
@@ -60,19 +64,11 @@ class _HomeRouteState extends State<HomeRoute> {
                 Navigator.of(context).pushNamed(RouteNames.MINE);
               },
             ),
-          ],
-          mainAxisAlignment: MainAxisAlignment.spaceAround, //均分底部导航栏横向空间
+          ], //均分底部导航栏横向空间
         ),
       ),
-      // body: Column(
-      //   mainAxisAlignment: MainAxisAlignment.start,
-      //   children: <Widget>[
-      //     NoteList(),
-      //     // NewsList(),
-      //     // JokeList(),
-      //   ],
-      // ),
-      body: _nestedBody(),
+      body: BulletinList(),
+      // body: _nestedBody(),
       floatingActionButton: FloatingActionButton(
         foregroundColor: Colors.white,
         hoverColor: Colors.green,
@@ -199,7 +195,10 @@ class _HomeRouteState extends State<HomeRoute> {
               ),
               onTap: () {
                 Navigator.pushNamed(context, RouteNames.NOTE_DETAIL,
-                    arguments: notes[index]);
+                        arguments: NotesAndIndex(notes: notes, index: index))
+                    .then((value) {
+                  print("index=$value");
+                });
               },
             ),
           );
@@ -228,13 +227,13 @@ class _HomeRouteState extends State<HomeRoute> {
                       color: Colors.lightGreen)),
               IconButton(
                   onPressed: _moreDialog,
-                  icon: Icon(Icons.more_vert, color: Colors.lightGreen)),
+                  icon: const Icon(Icons.more_vert, color: Colors.lightGreen)),
             ],
-            expandedHeight: 150,
-            flexibleSpace: FlexibleSpaceBar(
-              collapseMode: CollapseMode.pin,
-              background: _topBars(),
-            ),
+            // expandedHeight: 150,
+            // flexibleSpace: FlexibleSpaceBar(
+            //   collapseMode: CollapseMode.pin,
+            //   background: _topBars(),
+            // ),
           ),
         ];
       },

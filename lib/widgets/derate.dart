@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 Divider d1 = const Divider(
-  color: Colors.green,
-  thickness: 1,
-  height: 5,
+  color: Colors.black12,
+  thickness: 0.5,
+  height: 2,
 );
 
 BoxDecoration bd1 = BoxDecoration(
@@ -32,6 +32,20 @@ BoxDecoration bd2 = BoxDecoration(
       ),
     ]);
 
+BoxDecoration bd3 = BoxDecoration(
+    gradient: LinearGradient(colors: [
+      Colors.green.shade100,
+      Colors.white,
+    ]),
+    // border: Border.all(color: Colors.lightBlue, width: 0.5),
+    borderRadius: BorderRadius.circular(5),
+    boxShadow: const [
+      BoxShadow(
+        blurRadius: 4,
+        color: Colors.white,
+        offset: Offset(2, 2),
+      )
+    ]);
 // Widget card(IconData icon, String text, GestureTapCallback? tapFunc) {
 //   return InkWell(
 //     child: Container(

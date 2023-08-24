@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter_note/common/model/django/django.dart';
 import 'package:flutter_note/common/model/django/note.dart';
+import 'package:flutter_note/common/model/juhe/bulletin.dart';
 import 'package:flutter_note/common/model/juhe/joke.dart';
 import 'package:flutter_note/common/model/juhe/news.dart';
 import 'package:flutter_note/common/model/juhe/res_juhe.dart';
@@ -26,18 +27,24 @@ class JSON {
     }
 
     switch (T) {
-      case Response<Result<Joke>>:
+      case const (Response<Result<Joke>>):
         return Response<Result<Joke>>.fromJson(value) as T;
-      case Result<Joke>:
+      case const (Result<Joke>):
         return Result<Joke>.fromJson(value) as T;
       case Joke:
         return Joke.fromJson(value) as T;
-      case Response<ResultPage<News>>:
+      case const (Response<ResultPage<News>>):
         return Response<ResultPage<News>>.fromJson(value) as T;
-      case ResultPage<News>:
+      case const (ResultPage<News>):
         return ResultPage<News>.fromJson(value) as T;
       case News:
         return News.fromJson(value) as T;
+      case const (Response<ResultL<Bulletin>>):
+        return Response<ResultL<Bulletin>>.fromJson(value) as T;
+      case const (ResultL<Bulletin>):
+        return ResultL<Bulletin>.fromJson(value) as T;
+      case Bulletin:
+        return Bulletin.fromJson(value) as T;
       default:
         throw const FormatException("no model provided for content");
     }
@@ -66,28 +73,38 @@ class JSON {
     }
 
     switch (type) {
-      case Django<List<Note>>:
+      case const (Django<List<Note>>):
         return Django<List<Note>>.fromJson(value);
-      case List<Note>:
+      case const (List<Note>):
         return (value as List).map<Note>((e) => fromJson(e, Note)).toList();
       case Note:
         return Note.fromJson(value);
-      case Response<Result<Joke>>:
+      case const (Response<Result<Joke>>):
         return Response<Result<Joke>>.fromJson(value);
-      case Result<Joke>:
+      case const (Result<Joke>):
         return Result<Joke>.fromJson(value);
-      case List<Joke>:
+      case const (List<Joke>):
         return (value as List).map<Joke>((e) => fromJson(e, Joke)).toList();
       case Joke:
         return Joke.fromJson(value);
-      case Response<ResultPage<News>>:
+      case const (Response<ResultPage<News>>):
         return Response<ResultPage<News>>.fromJson(value);
-      case ResultPage<News>:
+      case const (ResultPage<News>):
         return ResultPage<News>.fromJson(value);
-      case List<News>:
+      case const (List<News>):
         return (value as List).map<News>((e) => fromJson(e, News)).toList();
       case News:
         return News.fromJson(value);
+      case const (Response<ResultL<Bulletin>>):
+        return Response<ResultL<Bulletin>>.fromJson(value);
+      case const (ResultL<Bulletin>):
+        return ResultL<Bulletin>.fromJson(value);
+      case const (List<Bulletin>):
+        return (value as List)
+            .map<Bulletin>((e) => fromJson(e, Bulletin))
+            .toList();
+      case Bulletin:
+        return Bulletin.fromJson(value);
       default:
         throw const FormatException("no model provided for content");
     }
@@ -104,20 +121,29 @@ class JSON {
         case Joke:
           result = (data as Joke).toJson();
           break;
-        case Result<Joke>:
+        case const (Result<Joke>):
           result = (data as Result<Joke>).toJson();
           break;
-        case Response<Result<Joke>>:
+        case const (Response<Result<Joke>>):
           result = (data as Response<Result<Joke>>).toJson();
           break;
         case News:
           result = (data as News).toJson();
           break;
-        case ResultPage<News>:
+        case const (ResultPage<News>):
           result = (data as ResultPage<News>).toJson();
           break;
-        case Response<ResultPage<News>>:
+        case const (Response<ResultPage<News>>):
           result = (data as Response<Response<News>>).toJson();
+          break;
+        case Bulletin:
+          result = (data as Bulletin).toJson();
+          break;
+        case const (ResultL<Bulletin>):
+          result = (data as ResultL<Bulletin>).toJson();
+          break;
+        case const (Response<ResultL<Bulletin>>):
+          result = (data as Response<ResultL<Bulletin>>).toJson();
           break;
         default:
           print("no model provided toJson");
