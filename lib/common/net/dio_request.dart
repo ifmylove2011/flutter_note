@@ -1,8 +1,10 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 
 class Config {
   static const NOTE_URL = "http://192.168.21.103:5055";
   static const JUHE_URL = "http://apis.juhe.cn";
+  static const JUHE_V_URL = "http://v.juhe.cn";
   static const TIME_OUT = 10000;
 }
 
@@ -24,22 +26,61 @@ class JuheHolder {
 
     /// 请求拦截器 and 响应拦截机 and 错误处理
     dio.interceptors.add(InterceptorsWrapper(onRequest: (options, handler) {
-      print("\n================== 请求数据 ==========================");
-      print("url = ${options.uri.toString()}");
-      print("headers = ${options.headers}");
-      print("params = ${options.data}");
+      debugPrint("\n================== 请求数据 ==========================");
+      debugPrint("url = ${options.uri.toString()}");
+      debugPrint("headers = ${options.headers}");
+      debugPrint("params = ${options.data}");
       return handler.next(options);
     }, onResponse: (response, handler) {
-      print("\n================== 响应数据 ==========================");
-      print("code = ${response.statusCode}");
-      // print("data = ${response.data}");
-      print("\n");
+      debugPrint("\n================== 响应数据 ==========================");
+      debugPrint("code = ${response.statusCode}");
+      // debugPrint("data = ${response.data}");
+      debugPrint("\n");
       handler.next(response);
-    }, onError: (DioError e, handler) {
-      print("\n================== 错误响应数据 ======================");
-      print("type = ${e.type}");
-      print("message = ${e.message}");
-      print("\n");
+    }, onError: (DioException e, handler) {
+      debugPrint("\n================== 错误响应数据 ======================");
+      debugPrint("type = ${e.type}");
+      debugPrint("message = ${e.message}");
+      debugPrint("\n");
+      return handler.next(e);
+    }));
+  }
+}
+
+class JuheVHolder {
+  late Dio dio;
+
+  static JuheVHolder? _instance;
+  static JuheVHolder get() {
+    return _instance ??= JuheVHolder();
+  }
+
+  JuheVHolder() {
+    dio = Dio();
+
+    dio.options = BaseOptions(
+        baseUrl: Config.JUHE_V_URL,
+        contentType: 'application/x-www-form-urlencoded',
+        headers: {});
+
+    /// 请求拦截器 and 响应拦截机 and 错误处理
+    dio.interceptors.add(InterceptorsWrapper(onRequest: (options, handler) {
+      debugPrint("\n================== 请求数据 ==========================");
+      debugPrint("url = ${options.uri.toString()}");
+      debugPrint("headers = ${options.headers}");
+      debugPrint("params = ${options.data}");
+      return handler.next(options);
+    }, onResponse: (response, handler) {
+      debugPrint("\n================== 响应数据 ==========================");
+      debugPrint("code = ${response.statusCode}");
+      // debugPrint("data = ${response.data}");
+      debugPrint("\n");
+      handler.next(response);
+    }, onError: (DioException e, handler) {
+      debugPrint("\n================== 错误响应数据 ======================");
+      debugPrint("type = ${e.type}");
+      debugPrint("message = ${e.message}");
+      debugPrint("\n");
       return handler.next(e);
     }));
   }
@@ -66,22 +107,22 @@ class DioHolder {
 
     /// 请求拦截器 and 响应拦截机 and 错误处理
     dio.interceptors.add(InterceptorsWrapper(onRequest: (options, handler) {
-      print("\n================== 请求数据 ==========================");
-      print("url = ${options.uri.toString()}");
-      print("headers = ${options.headers}");
-      print("params = ${options.data}");
+      debugPrint("\n================== 请求数据 ==========================");
+      debugPrint("url = ${options.uri.toString()}");
+      debugPrint("headers = ${options.headers}");
+      debugPrint("params = ${options.data}");
       return handler.next(options);
     }, onResponse: (response, handler) {
-      print("\n================== 响应数据 ==========================");
-      print("code = ${response.statusCode}");
-      // print("data = ${response.data}");
-      print("\n");
+      debugPrint("\n================== 响应数据 ==========================");
+      debugPrint("code = ${response.statusCode}");
+      // debugPrint("data = ${response.data}");
+      debugPrint("\n");
       handler.next(response);
-    }, onError: (DioError e, handler) {
-      print("\n================== 错误响应数据 ======================");
-      print("type = ${e.type}");
-      print("message = ${e.message}");
-      print("\n");
+    }, onError: (DioException e, handler) {
+      debugPrint("\n================== 错误响应数据 ======================");
+      debugPrint("type = ${e.type}");
+      debugPrint("message = ${e.message}");
+      debugPrint("\n");
       return handler.next(e);
     }));
   }

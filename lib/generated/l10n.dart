@@ -140,6 +140,16 @@ class S {
     );
   }
 
+  /// `All Content`
+  String get all_content {
+    return Intl.message(
+      'All Content',
+      name: 'all_content',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Literal`
   String get literal_note {
     return Intl.message(

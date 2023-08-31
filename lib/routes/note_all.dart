@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_note/common/constant.dart';
 import 'package:flutter_note/widgets/note_data.dart';
 
 class NoteRoute extends StatefulWidget {
@@ -11,8 +12,6 @@ class NoteRoute extends StatefulWidget {
 class _NoteRouteState extends State<NoteRoute> {
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: NoteList(),
-    );
+    return SingleChildScrollView();
   }
 }

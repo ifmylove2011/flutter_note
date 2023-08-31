@@ -1,7 +1,5 @@
 import 'package:flutter_note/common/model/convert.dart';
 
-import 'result.dart';
-
 class Response<T> {
   String? reason;
   T? result;
