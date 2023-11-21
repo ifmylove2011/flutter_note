@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_note/common/constant.dart';
+import 'package:flutter_note/common/model/arguments/notes_index.dart';
 import 'package:flutter_note/common/model/django/note.dart';
 import 'package:flutter_note/common/net/note_service.dart';
 import 'package:flutter_note/common/util/str_util.dart';
@@ -139,7 +140,7 @@ class _NoteListState extends State<NoteList> {
             ),
             onTap: () {
               Navigator.pushNamed(context, RouteNames.NOTE_DETAIL,
-                      arguments: notes[index])
+                      arguments: NotesAndIndex(notes: notes, index: index))
                   .then((value) {
                 debugPrint("--------$value");
               });

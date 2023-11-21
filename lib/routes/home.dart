@@ -1,19 +1,20 @@
+import 'dart:async';
+
 import 'package:flukit/flukit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_note/common/constant.dart';
 import 'package:flutter_note/generated/l10n.dart';
 import 'package:flutter_note/widgets/bubble.dart';
+import 'package:flutter_note/widgets/bulletin_data.dart';
 import 'package:flutter_note/widgets/function_w.dart';
 import 'package:flutter_note/widgets/grid_menu.dart';
+import 'package:flutter_note/widgets/joke_data.dart';
+import 'package:flutter_note/widgets/new_data.dart';
 import 'package:flutter_note/widgets/note_data.dart';
 import 'package:flutter_note/widgets/popup.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeRoute extends StatefulWidget {
-  const HomeRoute({Key? key, required this.title}) : super(key: key);
-
-  final String title;
-
   @override
   State<HomeRoute> createState() => _HomeRouteState();
 }
@@ -97,17 +98,14 @@ class _HomeRouteState extends State<HomeRoute> {
                             ? Icons.list
                             : Icons.grid_on,
                         color: Colors.lightGreen)),
-                IconButton(
-                    onPressed: _moreDialog,
-                    icon:
-                        const Icon(Icons.more_vert, color: Colors.lightGreen)),
+                _moreDialog(context),
               ],
             ),
           ),
         ];
       },
       body: Builder(builder: (BuildContext context) {
-        return NoteList(layout: Layout.values[layoutStyle]);
+        return NewsList(layout: Layout.values[layoutStyle]);
       }),
     );
   }
@@ -116,7 +114,32 @@ class _HomeRouteState extends State<HomeRoute> {
     Navigator.of(context).pushNamed(RouteNames.ADD_NOTE);
   }
 
-  void _moreDialog() {}
+  PopupMenuButton _moreDialog(BuildContext context) {
+    return PopupMenuButton(
+        itemBuilder: (BuildContext context) {
+          return [
+            PopupMenuItem(
+              child: Text("Momo"),
+              onTap: () {
+                Navigator.of(context).pushNamed(RouteNames.MOMO);
+              },
+            ),
+            PopupMenuItem(
+              child: Text("Weixin"),
+            ),
+            PopupMenuItem(
+              child: Text("QQ"),
+            ),
+          ];
+        },
+        onSelected: (value) {
+          print(value);
+        },
+        onCanceled: () {
+          print("canceled");
+        },
+        icon: const Icon(Icons.more_horiz, color: Colors.lightGreen));
+  }
 
   /// 切换列表/方格/瀑布视图
   void _switchLayoutGrid() {

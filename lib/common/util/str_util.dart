@@ -25,4 +25,14 @@ class StrUtil {
     }
     return abstractContent;
   }
+
+  static bool isEmpty(String? src) {
+    if (src == null) {
+      return true;
+    }
+    if (src.isEmpty) {
+      return true;
+    }
+    return false;
+  }
 }

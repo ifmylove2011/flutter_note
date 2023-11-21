@@ -67,15 +67,23 @@ class JuheService {
         "is_filter": 1
       },
     );
+    debugPrint(res.toString());
     Response<ResultPage<News>> result =
         JSON().fromJsonAs<Response<ResultPage<News>>>(res.toString());
     return result.result!.data;
   }
 
   static getNewsLocal() async {
-    var res = await rootBundle.loadString("assets/data/jokes.json");
+    var res = await rootBundle.loadString("assets/data/news.json");
     Response<ResultPage<News>> result =
         JSON().fromJsonAs<Response<ResultPage<News>>>(res.toString());
     return result.result!.data;
+  }
+
+  static getNewsUrl(String url) async {
+    var res = await JuheVHolder.get().dio.get(
+          url,
+        );
+    return res.toString();
   }
 }

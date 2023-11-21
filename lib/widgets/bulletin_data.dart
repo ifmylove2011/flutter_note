@@ -56,6 +56,7 @@ class _BulletinListState extends State<BulletinList> {
                 ),
                 SliverMasonryGrid(
                     delegate: SliverChildBuilderDelegate(
+                      childCount: bulletins.length,
                       (context, index) {
                         return _item(index);
                       },
@@ -77,6 +78,7 @@ class _BulletinListState extends State<BulletinList> {
           itemBuilder: (BuildContext context, int index) {
             return _item(index);
           },
+          itemCount: bulletins.length,
         ),
       );
     } else {
@@ -90,10 +92,12 @@ class _BulletinListState extends State<BulletinList> {
                   handle:
                       NestedScrollView.sliverOverlapAbsorberHandleFor(context),
                 ),
-                SliverList(delegate: SliverChildBuilderDelegate(
+                SliverList(
+                    delegate: SliverChildBuilderDelegate(
                   (context, index) {
                     return _item(index);
                   },
+                  childCount: bulletins.length,
                 ))
               ],
             ));

@@ -1,3 +1,5 @@
+// ignore_for_file: must_be_immutable, library_private_types_in_public_api, prefer_const_constructors_in_immutables
+
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_note/widgets/derate.dart';
@@ -7,9 +9,7 @@ import 'package:flutter_note/widgets/derate.dart';
 class RestartWidget extends StatefulWidget {
   final Widget child;
 
-  const RestartWidget({Key? key, required this.child})
-      : assert(child != null),
-        super(key: key);
+  const RestartWidget({Key? key, required this.child}) : super(key: key);
 
   static restartApp(BuildContext context) {
     final _RestartWidgetState? state =
@@ -111,10 +111,10 @@ class MenuCard extends StatelessWidget {
         child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
           Icon(icon, color: Colors.lightGreen),
           Padding(
-            padding: EdgeInsets.only(top: 5.0),
+            padding: const EdgeInsets.only(top: 5.0),
             child: Text(
               text,
-              style: TextStyle(fontSize: 11),
+              style: const TextStyle(fontSize: 11),
             ),
           )
         ]),
@@ -127,24 +127,44 @@ class MenuCard extends StatelessWidget {
 class LoadingOverlay extends StatelessWidget {
   final bool isLoading;
   final Widget child;
+  final RefreshCallback? onRefresh;
 
-  LoadingOverlay({required this.isLoading, required this.child});
+  LoadingOverlay(
+      {required this.isLoading, required this.child, this.onRefresh});
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: <Widget>[
-        child,
-        if (isLoading)
-          Positioned.fill(
-            child: Container(
-              color: Colors.black.withOpacity(0.5),
-              child: Center(
-                child: CircularProgressIndicator(),
+    if (onRefresh == null) {
+      return Stack(
+        children: <Widget>[
+          child,
+          if (isLoading)
+            Positioned.fill(
+              child: Container(
+                color: Colors.black.withOpacity(0.5),
+                child: const Center(
+                  child: CircularProgressIndicator(),
+                ),
               ),
             ),
-          ),
-      ],
-    );
+        ],
+      );
+    }
+    return RefreshIndicator(
+        onRefresh: onRefresh!,
+        child: Stack(
+          children: <Widget>[
+            child,
+            if (isLoading)
+              Positioned.fill(
+                child: Container(
+                  color: Colors.black.withOpacity(0.5),
+                  child: const Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                ),
+              ),
+          ],
+        ));
   }
 }

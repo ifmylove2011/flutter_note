@@ -50,6 +50,16 @@ class S {
     return Localizations.of<S>(context, S);
   }
 
+  /// `Flutter Note`
+  String get app_name {
+    return Intl.message(
+      'Flutter Note',
+      name: 'app_name',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Home`
   String get title {
     return Intl.message(

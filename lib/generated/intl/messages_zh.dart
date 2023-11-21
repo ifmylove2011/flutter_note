@@ -26,6 +26,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "alarm": MessageLookupByLibrary.simpleMessage("提醒"),
         "all_content": MessageLookupByLibrary.simpleMessage("全部内容"),
         "all_note": MessageLookupByLibrary.simpleMessage("全部笔记"),
+        "app_name": MessageLookupByLibrary.simpleMessage("自用笔记"),
         "attach": MessageLookupByLibrary.simpleMessage("附件"),
         "audio_note": MessageLookupByLibrary.simpleMessage("音频录入"),
         "bookmark": MessageLookupByLibrary.simpleMessage("书签"),

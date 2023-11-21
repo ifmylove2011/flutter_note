@@ -26,6 +26,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "alarm": MessageLookupByLibrary.simpleMessage("Alarm"),
         "all_content": MessageLookupByLibrary.simpleMessage("All Content"),
         "all_note": MessageLookupByLibrary.simpleMessage("All Notes"),
+        "app_name": MessageLookupByLibrary.simpleMessage("Flutter Note"),
         "attach": MessageLookupByLibrary.simpleMessage("Attach"),
         "audio_note": MessageLookupByLibrary.simpleMessage("Audio"),
         "bookmark": MessageLookupByLibrary.simpleMessage("Bookmark"),

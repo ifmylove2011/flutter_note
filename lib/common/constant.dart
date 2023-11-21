@@ -57,5 +57,9 @@ class RouteNames {
   static const ALL_NOTE = "all_note";
   static const ADD_NOTE = "add_note";
   static const NOTE_DETAIL = "note_detail";
+  static const NEWS_DETAIL = "news_detail";
   static const MINE = "mine";
+  static const WEB = "web";
+  static const MOMO = "momo";
+  static const MOMO_DETAIL = "momo_detail";
 }

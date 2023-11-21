@@ -8,6 +8,7 @@
         "statusBar.background": "#1c2e3f",
         "statusBarItem.remoteBackground": "#1c2e3f"
     },
+    "dart.sdkPath": "D:\\XTER\\flutter\\bin\\cache\\dart-sdk\\bin",
     "debug.console.fontFamily": "迷你简行楷",
     "editor.fontFamily": "Monaco,Consolas,Noto Mono",
     "editor.fontSize": 14,
