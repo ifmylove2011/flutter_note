@@ -3,6 +3,8 @@
 #
 
 list(APPEND FLUTTER_PLUGIN_LIST
+  objectbox_flutter_libs
+  sqlite3_flutter_libs
   url_launcher_windows
 )
 

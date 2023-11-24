@@ -8,6 +8,7 @@ import 'package:flutter_note/common/model/juhe/news.dart';
 import 'package:flutter_note/common/model/juhe/res_juhe.dart';
 import 'package:flutter_note/common/model/juhe/result.dart';
 import 'package:flutter_note/common/model/reptile/momo.dart';
+import 'package:flutter_note/common/model/reptile/momo_detail.dart';
 
 class JSON {
   factory JSON() => _instance;
@@ -48,6 +49,8 @@ class JSON {
         return Bulletin.fromJson(value) as T;
       case Momo:
         return Momo.fromJson(value) as T;
+      case MomoDetail:
+        return MomoDetail.fromJson(value) as T;
       default:
         throw const FormatException("no model provided for content");
     }
@@ -112,6 +115,12 @@ class JSON {
         return Momo.fromJson(value);
       case const (List<Momo>):
         return (value as List).map<Momo>((e) => fromJson(e, Momo)).toList();
+      case MomoDetail:
+        return MomoDetail.fromJson(value);
+      case const (List<MomoDetail>):
+        return (value as List)
+            .map<MomoDetail>((e) => fromJson(e, MomoDetail))
+            .toList();
       default:
         throw const FormatException("no model provided for content");
     }
@@ -154,6 +163,8 @@ class JSON {
           break;
         case Momo:
           result = (data as Momo).toJson();
+        case MomoDetail:
+          result = (data as MomoDetail).toJson();
         default:
           print("no model provided toJson");
       }

@@ -30,7 +30,6 @@ class _NewsDetailState extends State<NewsDetailRoute> {
 
   @override
   Widget build(BuildContext context) {
-    debugPrint("--------building");
     news = ModalRoute.of(context)?.settings.arguments as News;
 
     // if (StrUtil.isEmpty(content) && !loading) {

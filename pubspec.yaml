@@ -66,8 +66,13 @@ dependencies:
   webview_flutter: ^4.2.3
   html: ^0.15.0
   web_scraper: ^0.1.4
-
-
+  path_provider: ^2.1.1
+  sqflite_common_ffi: ^2.3.0
+  sqflite: ^2.3.0
+  sqlite3_flutter_libs: ^0.5.0
+  path: ^1.8.3
+  objectbox: ^2.3.1
+  objectbox_flutter_libs: ^2.3.1
 
 dependency_overrides:
   flutter_layout_grid: ^2.0.4
@@ -86,6 +91,8 @@ dev_dependencies:
   # rules and activating additional ones.
   flutter_lints: ^2.0.2
   test: ^1.16.4
+  build_runner: ^2.4.6
+  objectbox_generator: ^2.3.1
 
 ffigen:
   output: 'lib/cpp/bin/generated_bindings.dart'

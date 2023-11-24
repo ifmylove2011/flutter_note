@@ -1,33 +1,44 @@
 import 'dart:convert';
 
+// ignore: depend_on_referenced_packages
 import 'package:collection/collection.dart';
+import 'package:flutter_note/common/model/reptile/momo_detail.dart';
+import 'package:objectbox/objectbox.dart';
 
+@Entity()
 class Momo {
   String? title;
   String? detailUrl;
   String? postUrl;
-  String? dataPid;
+  @Id(assignable: true)
+  int? dataPid;
+  @Property(uid: 3724144874425576011)
   String? descNum;
+  int? page;
 
-  Momo({
-    this.title,
-    this.detailUrl,
-    this.postUrl,
-    this.dataPid,
-    this.descNum,
-  });
+  @Backlink('momo')
+  final details = ToMany<MomoDetail>();
+
+  Momo(
+      {this.title,
+      this.detailUrl,
+      this.postUrl,
+      this.dataPid,
+      this.descNum,
+      this.page});
 
   @override
   String toString() {
-    return 'Momo(title: $title, detailUrl: $detailUrl, postUrl: $postUrl, dataPid: $dataPid, descNum: $descNum)';
+    return 'Momo(title: $title, detailUrl: $detailUrl, postUrl: $postUrl, dataPid: $dataPid, descNum: $descNum, page: $page)';
   }
 
   factory Momo.fromMap(Map<String, dynamic> data) => Momo(
         title: data['title'] as String?,
         detailUrl: data['detail_url'] as String?,
         postUrl: data['post_url'] as String?,
-        dataPid: data['data-pid'] as String?,
+        dataPid: data['data-pid'] as int?,
         descNum: data['desc_num'] as String?,
+        page: data['page'] as int?,
       );
 
   Map<String, dynamic> toMap() => {
@@ -36,6 +47,7 @@ class Momo {
         'post_url': postUrl,
         'data-pid': dataPid,
         'desc_num': descNum,
+        'page': page,
       };
 
   /// `dart:convert`
@@ -59,10 +71,5 @@ class Momo {
   }
 
   @override
-  int get hashCode =>
-      title.hashCode ^
-      detailUrl.hashCode ^
-      postUrl.hashCode ^
-      dataPid.hashCode ^
-      descNum.hashCode;
+  int get hashCode => dataPid.hashCode;
 }

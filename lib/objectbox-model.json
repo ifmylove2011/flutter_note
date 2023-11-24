@@ -1,0 +1,106 @@
+{
+  "_note1": "KEEP THIS FILE! Check it into a version control system (VCS) like git.",
+  "_note2": "ObjectBox manages crucial IDs for your object model. See docs for details.",
+  "_note3": "If you have VCS merge conflicts, you must resolve them according to ObjectBox docs.",
+  "entities": [
+    {
+      "id": "1:554181165008796417",
+      "lastPropertyId": "7:3724144874425576011",
+      "name": "Momo",
+      "properties": [
+        {
+          "id": "1:2192253455544057712",
+          "name": "title",
+          "type": 9
+        },
+        {
+          "id": "2:7547200317169031040",
+          "name": "detailUrl",
+          "type": 9
+        },
+        {
+          "id": "3:9010743952602498448",
+          "name": "postUrl",
+          "type": 9
+        },
+        {
+          "id": "4:5993301589076212120",
+          "name": "dataPid",
+          "type": 6,
+          "flags": 129
+        },
+        {
+          "id": "6:5641292022804945752",
+          "name": "page",
+          "type": 6
+        },
+        {
+          "id": "7:3724144874425576011",
+          "name": "descNum",
+          "type": 9
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "2:3534921696094948130",
+      "lastPropertyId": "7:1306190001780927379",
+      "name": "MomoDetail",
+      "properties": [
+        {
+          "id": "1:6923841579067089926",
+          "name": "id",
+          "type": 6,
+          "flags": 129
+        },
+        {
+          "id": "2:6639789365229640403",
+          "name": "title",
+          "type": 9
+        },
+        {
+          "id": "3:5429498135647839484",
+          "name": "imgUrl",
+          "type": 9
+        },
+        {
+          "id": "4:2312750288253394405",
+          "name": "detailId",
+          "type": 6
+        },
+        {
+          "id": "5:2725807348861426141",
+          "name": "page",
+          "type": 6
+        },
+        {
+          "id": "6:1523353315452663913",
+          "name": "momoId",
+          "type": 11,
+          "flags": 520,
+          "indexId": "1:1476286063050676806",
+          "relationTarget": "Momo"
+        },
+        {
+          "id": "7:1306190001780927379",
+          "name": "pageNum",
+          "type": 6
+        }
+      ],
+      "relations": []
+    }
+  ],
+  "lastEntityId": "2:3534921696094948130",
+  "lastIndexId": "1:1476286063050676806",
+  "lastRelationId": "0:0",
+  "lastSequenceId": "0:0",
+  "modelVersion": 5,
+  "modelVersionParserMinimum": 5,
+  "retiredEntityUids": [],
+  "retiredIndexUids": [],
+  "retiredPropertyUids": [
+    8035616526113113263
+  ],
+  "retiredRelationUids": [],
+  "version": 1
+}

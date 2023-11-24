@@ -12,10 +12,10 @@ import 'package:web_scraper/web_scraper.dart';
 void main() {
   HttpOverrides.global = MyHttpOverrides();
   WebScraper webScraperMomo = WebScraper();
-
   group('momo test', () {
     test('momo test', () async {
-      bool page = await webScraperMomo.loadFullURL('https://www.momotk4.es/');
+      bool page =
+          await webScraperMomo.loadFullURL('https://www.momotk4.es/?page=1');
       expect(page, true);
     });
     // test('Gets Page Content & Loads from String', () {
@@ -38,9 +38,10 @@ void main() {
         momo['detail_url'] = article.querySelector('a')!.attributes['href'];
         momo['post_url'] =
             article.querySelector('a img')!.attributes['data-src'];
-        momo['data-pid'] =
-            article.querySelector('footer a')!.attributes['data-pid'];
+        momo['data-pid'] = int.parse(
+            article.querySelector('footer a')!.attributes['data-pid']!);
         momo['desc_num'] = article.querySelector('a div')!.text;
+        momo['page'] = 1;
         momos.add(momo);
       }
       String jsonS = json.encode(momos);
@@ -50,6 +51,40 @@ void main() {
       // expect(names, isNotEmpty);
       // print(names);
       expect(articles, isNotEmpty);
+    });
+  });
+
+  group('momo detail test', () {
+    test('momo detail test', () async {
+      bool page =
+          await webScraperMomo.loadFullURL('https://www.momotk4.es/33804.html');
+      expect(page, true);
+    });
+    // test('Gets Page Content & Loads from String', () {
+    //   final pageContent = webScraperMomo.getPageContent();
+    //   expect(pageContent, isA<String>());
+    //   print(pageContent);
+    // });
+    test('Get Element ', () {
+      List<Map<String, dynamic>> details = [];
+      List<Element> thumbnails =
+          webScraperMomo.selects('div.ngg-gallery-thumbnail a');
+      int pageNum = int.parse(webScraperMomo
+          .select('div.ngg-navigation > a.page-numbers')!
+          .attributes['data-pageid']!);
+      for (var thumbnail in thumbnails) {
+        Map<String, dynamic> detail = {};
+        detail['id'] = int.parse(thumbnail.attributes['data-image-id']!);
+        detail['title'] = thumbnail.attributes['data-title'];
+        detail['img_url'] = thumbnail.attributes['href'];
+        detail['detail_id'] = 33804;
+        detail['page_num'] = pageNum;
+        detail['page'] = 1;
+        details.add(detail);
+      }
+      String jsonS = json.encode(details);
+      print(jsonS);
+      expect(thumbnails, isNotEmpty);
     });
   });
 

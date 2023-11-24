@@ -17,58 +17,50 @@ import 'package:webview_flutter/webview_flutter.dart';
 import '../common/db/objectbox.dart';
 import '../widgets/function_w.dart';
 
-class MomoRoute extends StatefulWidget {
+class MomoDetailRoute extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return _MomoRouteState();
+    return _MomoDetailRouteState();
   }
 }
 
-class _MomoRouteState extends State<MomoRoute> {
-  final momoBox = objectBox.store.box<Momo>();
+class _MomoDetailRouteState extends State<MomoDetailRoute> {
   final momoDetailBox = objectBox.store.box<MomoDetail>();
-  List<Momo> momos = [];
   List<MomoDetail> momoDetails = [];
   int page = 1;
-  int detail_page = 1;
-  int data_type = 0;
-  int detail_id = 0;
   bool loading = false;
-  bool loadingD = false;
+  late Momo momo;
   WebScraper webScraperMomo = WebScraper();
   // final database = Provider.of<AppDatabase>(context);
 
   @override
   void initState() {
     loading = true;
-    requestMomo();
+    requestMomoDetail();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    momo = ModalRoute.of(context)?.settings.arguments as Momo;
+
     return Scaffold(
         appBar: AppBar(
-          title: Text('MoMo图库'),
+          title: Text('${momo.title}'),
           leading: Builder(builder: (context) {
             return IconButton(
               icon: const Icon(Icons.arrow_back,
                   color: Colors.lightGreen), //自定义图标
               onPressed: () {
-                if (data_type == 0) {
-                  Navigator.of(context).pop();
-                } else {
-                  data_type = 0;
-                  setState(() {});
-                }
+                Navigator.of(context).pop();
               },
             );
           }),
         ),
-        body: _body());
+        body: _bodyDetail());
   }
 
-  Widget _body() {
+  Widget _bodyDetail() {
     if (Platform.isAndroid) {
       //处理因SliveApp存在ListView或GridView无法感知头部高度的问题
       return LoadingOverlay(
@@ -83,9 +75,9 @@ class _MomoRouteState extends State<MomoRoute> {
               SliverMasonryGrid(
                   delegate: SliverChildBuilderDelegate(
                     (context, index) {
-                      return _item(index);
+                      return _itemDetail(index);
                     },
-                    childCount: momos.length,
+                    childCount: momoDetails.length,
                   ),
                   gridDelegate:
                       const SliverSimpleGridDelegateWithFixedCrossAxisCount(
@@ -103,19 +95,19 @@ class _MomoRouteState extends State<MomoRoute> {
           crossAxisCount: 2,
         ),
         itemBuilder: (BuildContext context, int index) {
-          return _item(index);
+          return _itemDetail(index);
         },
-        itemCount: momos.length,
+        itemCount: momoDetails.length,
       ),
     );
   }
 
   Future _loadMore() async {
     page++;
-    requestMomo();
+    requestMomoDetail();
   }
 
-  Widget _item(int index) {
+  Widget _itemDetail(int index) {
     return Padding(
       padding: const EdgeInsets.all(5),
       child: DecoratedBox(
@@ -131,7 +123,7 @@ class _MomoRouteState extends State<MomoRoute> {
                     style: const TextStyle(
                         fontWeight: FontWeight.bold, fontSize: 11),
                     textAlign: TextAlign.start,
-                    momos[index].title!,
+                    momoDetails[index].title!,
                   ),
                   Stack(children: <Widget>[
                     const Column(
@@ -144,56 +136,37 @@ class _MomoRouteState extends State<MomoRoute> {
                     ),
                     FadeInImage.memoryNetwork(
                       placeholder: kTransparentImage,
-                      image: momos[index].postUrl!,
+                      image: momoDetails[index].imgUrl!,
                     ),
-                  ]),
-                  Row(
-                    children: [
-                      Text(
-                        style: const TextStyle(color: Colors.black54),
-                        textAlign: TextAlign.start,
-                        momos[index].dataPid.toString(),
-                        textScaleFactor: 0.8,
-                      ),
-                      const Spacer(),
-                      Text(
-                        style: const TextStyle(color: Colors.black54),
-                        textAlign: TextAlign.end,
-                        momos[index].descNum!,
-                        textScaleFactor: 0.8,
-                      ),
-                    ],
-                  )
+                  ])
                 ],
               ),
             ),
             onTap: () {
-              Navigator.pushNamed(context, RouteNames.MOMO_DETAIL,
-                      arguments: momos[index])
-                  .then((value) {
-                debugPrint("--------$value");
-              });
-              print(momos[index]);
+              // Navigator.pushNamed(context, RouteNames.NEWS_DETAIL,
+              //         arguments: momos[index])
+              //     .then((value) {
+              //   debugPrint("--------$value");
+              // });
+              print(momoDetails[index]);
             },
           )),
     );
   }
 
-  void requestMomo() {
+  void requestMomoDetail() {
     Future(() async {
       setState(() {
         loading = true;
       });
-      // List<Momo> momos = await momoBox.getAllAsync();
-      // debugPrint("in db momo.size=${momos.length}");
-      // return await webScraperMomo.loadFullURL('https://momotk.uno/');
-      return await ReptileService().getMomo(page);
+      // return await ReptileService().getMomoDetailLocal(detail_id, page);
+      return await ReptileService().getMomoDetail(momo.dataPid!, page);
     }).then((value) {
-      List<Momo> temp = value!.toList();
-      temp.addAll(momos);
-      momos = temp;
-      // momoBox.putManyAsync(temp);
-      debugPrint("momo.size=${momos.length}");
+      List<MomoDetail> temp = value!.toList();
+      temp.addAll(momoDetails);
+      momoDetails = temp;
+      momoDetailBox.putManyAsync(momoDetails);
+      debugPrint("momoDetails.size=${momoDetails.length}");
       setState(() {
         loading = false;
       });

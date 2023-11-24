@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_note/common/constant.dart';
+import 'package:flutter_note/common/db/dbm.dart';
+import 'package:flutter_note/common/db/objectbox.dart';
 import 'package:flutter_note/generated/l10n.dart';
 import 'package:flutter_note/routes/add_note.dart';
 import 'package:flutter_note/routes/home.dart';
@@ -15,8 +17,15 @@ import 'package:flutter_note/routes/note_detail.dart';
 import 'package:flutter_note/routes/web.dart';
 import 'package:flutter_note/widgets/function_w.dart';
 
-void main() {
+import 'routes/momo_detail.dart';
+
+late ObjectBox objectBox;
+
+Future<void> main() async {
   HttpOverrides.global = MyHttpOverrides();
+  // DBM().initDB();
+  WidgetsFlutterBinding.ensureInitialized;
+  objectBox = await ObjectBox.create();
 
   runApp(const NoteApp());
   if (Platform.isAndroid) {
@@ -59,6 +68,7 @@ class NoteApp extends StatelessWidget {
         RouteNames.MINE: (context) => MineRoute(),
         RouteNames.WEB: (context) => WebNoteRoute(),
         RouteNames.MOMO: (context) => MomoRoute(),
+        RouteNames.MOMO_DETAIL: (context) => MomoDetailRoute(),
       },
     ));
   }
