@@ -36,6 +36,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "home": MessageLookupByLibrary.simpleMessage("首页"),
         "hyper_note": MessageLookupByLibrary.simpleMessage("混合笔记"),
         "literal_note": MessageLookupByLibrary.simpleMessage("文字笔记"),
+        "noMore": MessageLookupByLibrary.simpleMessage("没有更多"),
         "recording": MessageLookupByLibrary.simpleMessage("录音"),
         "settings": MessageLookupByLibrary.simpleMessage("设置"),
         "subTitle": MessageLookupByLibrary.simpleMessage("笔记"),

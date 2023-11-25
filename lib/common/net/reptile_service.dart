@@ -29,7 +29,8 @@ class ReptileService {
     if (momos.isEmpty) {
       String? res = await requestMomoPost(page);
       momos = JSON().fromJson(res, List<Momo>);
-      momos.sort((a, b) => b.dataPid!.compareTo(a.dataPid!));
+      // print(momos);
+      momos.sort((a, b) => a.dataPid!.compareTo(b.dataPid!));
       momoBox.putManyAsync(momos);
     }
     return momos;
@@ -41,7 +42,7 @@ class ReptileService {
     if (momoDetails.isEmpty) {
       String? res = await requestMomoDetail(detailId, page);
       momoDetails = JSON().fromJson(res, List<MomoDetail>);
-      momoDetails.sort((a, b) => b.id!.compareTo(a.id!));
+      // momoDetails.sort((a, b) => b.id!.compareTo(a.id!));
       momoDetailBox.putManyAsync(momoDetails);
     }
     return momoDetails;
@@ -49,7 +50,7 @@ class ReptileService {
 
   Future<String?> requestMomoPost(int page) async {
     WebScraper webScraperMomo = WebScraper();
-    String dest = 'https://www.momotk4.es/?page=$page';
+    String dest = 'https://www.momotk4.es/page/$page';
     print(dest);
     bool called = await webScraperMomo.loadFullURL(dest);
     if (called) {
@@ -84,9 +85,10 @@ class ReptileService {
       List<Map<String, dynamic>> details = [];
       List<Element> thumbnails =
           webScraperMomo.selects('div.ngg-gallery-thumbnail a');
-      int pageNum = int.parse(webScraperMomo
-          .select('div.ngg-navigation > a.page-numbers')!
-          .attributes['data-pageid']!);
+      List<Element> pageNumTags =
+          webScraperMomo.selects('div.ngg-navigation > a.page-numbers')!;
+      int pageNum = int.parse(
+          pageNumTags[pageNumTags.length - 1].attributes['data-pageid']!);
       for (var thumbnail in thumbnails) {
         Map<String, dynamic> detail = {};
         detail['id'] = int.parse(thumbnail.attributes['data-image-id']!);
@@ -95,7 +97,6 @@ class ReptileService {
         detail['detail_id'] = detailId;
         detail['page'] = page;
         detail['page_num'] = pageNum;
-        detail['total_page'] = page;
         details.add(detail);
       }
       String jsonS = json.encode(details);
@@ -114,6 +115,15 @@ class ReptileService {
         .order(Momo_.dataPid, flags: Order.descending)
         .build();
     List<Momo> momos = await query.findAsync();
+    return momos;
+  }
+
+  Future<List<MomoDetail>> getMomoDetailDBAll(int detailId) async {
+    Query<MomoDetail> query = momoDetailBox
+        .query(MomoDetail_.detailId.equals(detailId))
+        .order(MomoDetail_.id, flags: Order.descending)
+        .build();
+    List<MomoDetail> momos = await query.findAsync();
     return momos;
   }
 

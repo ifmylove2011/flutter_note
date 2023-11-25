@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:fast_cached_network_image/fast_cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_note/common/constant.dart';
 import 'package:flutter_note/common/model/reptile/momo.dart';
@@ -25,16 +26,12 @@ class MomoRoute extends StatefulWidget {
 }
 
 class _MomoRouteState extends State<MomoRoute> {
+  late ScrollController _scrollController;
   final momoBox = objectBox.store.box<Momo>();
-  final momoDetailBox = objectBox.store.box<MomoDetail>();
   List<Momo> momos = [];
   List<MomoDetail> momoDetails = [];
   int page = 1;
-  int detail_page = 1;
-  int data_type = 0;
-  int detail_id = 0;
   bool loading = false;
-  bool loadingD = false;
   WebScraper webScraperMomo = WebScraper();
   // final database = Provider.of<AppDatabase>(context);
 
@@ -42,6 +39,12 @@ class _MomoRouteState extends State<MomoRoute> {
   void initState() {
     loading = true;
     requestMomo();
+    _scrollController = ScrollController();
+    _scrollController.addListener(() {
+      if (_scrollController.position.extentAfter == 0) {
+        _loadMore();
+      }
+    });
     super.initState();
   }
 
@@ -55,12 +58,7 @@ class _MomoRouteState extends State<MomoRoute> {
               icon: const Icon(Icons.arrow_back,
                   color: Colors.lightGreen), //自定义图标
               onPressed: () {
-                if (data_type == 0) {
-                  Navigator.of(context).pop();
-                } else {
-                  data_type = 0;
-                  setState(() {});
-                }
+                Navigator.of(context).pop();
               },
             );
           }),
@@ -75,6 +73,7 @@ class _MomoRouteState extends State<MomoRoute> {
           onRefresh: _loadMore,
           isLoading: loading,
           child: CustomScrollView(
+            controller: _scrollController,
             slivers: <Widget>[
               SliverOverlapInjector(
                 handle:
@@ -98,6 +97,7 @@ class _MomoRouteState extends State<MomoRoute> {
       onRefresh: _loadMore,
       isLoading: loading,
       child: MasonryGridView.builder(
+        controller: _scrollController,
         shrinkWrap: true,
         gridDelegate: const SliverSimpleGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,
@@ -111,6 +111,7 @@ class _MomoRouteState extends State<MomoRoute> {
   }
 
   Future _loadMore() async {
+    print("loading more ...");
     page++;
     requestMomo();
   }
@@ -142,10 +143,34 @@ class _MomoRouteState extends State<MomoRoute> {
                         )
                       ],
                     ),
-                    FadeInImage.memoryNetwork(
-                      placeholder: kTransparentImage,
-                      image: momos[index].postUrl!,
-                    ),
+                    FastCachedImage(
+                      url: momos[index].postUrl!,
+                      fit: BoxFit.cover,
+                      fadeInDuration: const Duration(seconds: 1),
+                      errorBuilder: (context, exception, stacktrace) {
+                        return Text(stacktrace.toString());
+                      },
+                      // loadingBuilder: (context, progress) {
+                      //   return Stack(
+                      //     alignment: Alignment.center,
+                      //     children: [
+                      //       if (progress.isDownloading &&
+                      //           progress.totalBytes != null)
+                      //         Text(
+                      //             '${progress.downloadedBytes ~/ 1024} / ${progress.totalBytes! ~/ 1024} kb',
+                      //             style: const TextStyle(color: Colors.red)),
+                      //       Center(
+                      //           child: CircularProgressIndicator(
+                      //               color: Colors.red,
+                      //               value: progress.progressPercentage.value)),
+                      //     ],
+                      //   );
+                      // },
+                    )
+                    // FadeInImage.memoryNetwork(
+                    //   placeholder: kTransparentImage,
+                    //   image: momos[index].postUrl!,
+                    // ),
                   ]),
                   Row(
                     children: [
@@ -168,12 +193,9 @@ class _MomoRouteState extends State<MomoRoute> {
               ),
             ),
             onTap: () {
-              Navigator.pushNamed(context, RouteNames.MOMO_DETAIL,
-                      arguments: momos[index])
-                  .then((value) {
-                debugPrint("--------$value");
-              });
               print(momos[index]);
+              Navigator.pushNamed(context, RouteNames.MOMO_DETAIL,
+                  arguments: momos[index]);
             },
           )),
     );
@@ -191,8 +213,8 @@ class _MomoRouteState extends State<MomoRoute> {
     }).then((value) {
       List<Momo> temp = value!.toList();
       temp.addAll(momos);
-      momos = temp;
-      // momoBox.putManyAsync(temp);
+      momos = temp.toSet().toList();
+      momos.sort((a, b) => b.dataPid!.compareTo(a.dataPid!));
       debugPrint("momo.size=${momos.length}");
       setState(() {
         loading = false;

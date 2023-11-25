@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:fast_cached_network_image/fast_cached_network_image.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -16,16 +17,25 @@ import 'package:flutter_note/routes/news_detail.dart';
 import 'package:flutter_note/routes/note_detail.dart';
 import 'package:flutter_note/routes/web.dart';
 import 'package:flutter_note/widgets/function_w.dart';
-
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:path_provider/path_provider.dart';
+import 'dart:io' as io;
+import 'package:path/path.dart' as p;
 import 'routes/momo_detail.dart';
 
 late ObjectBox objectBox;
-
+GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 Future<void> main() async {
   HttpOverrides.global = MyHttpOverrides();
   // DBM().initDB();
   WidgetsFlutterBinding.ensureInitialized;
   objectBox = await ObjectBox.create();
+  if (Platform.isWindows) {
+    final io.Directory cacheDir = await getApplicationDocumentsDirectory();
+    String imageCachePath = p.join(cacheDir.path, "imageCache");
+    await FastCachedImageConfig.init(
+        subDir: imageCachePath, clearCacheAfter: const Duration(days: 15));
+  }
 
   runApp(const NoteApp());
   if (Platform.isAndroid) {
@@ -44,6 +54,8 @@ class NoteApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return RestartWidget(
         child: MaterialApp(
+      navigatorKey: navigatorKey,
+      builder: FToastBuilder(),
       scrollBehavior: WindowsScrollBehavior(),
       debugShowCheckedModeBanner: false,
       localizationsDelegates: const [

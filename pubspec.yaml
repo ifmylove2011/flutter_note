@@ -73,7 +73,9 @@ dependencies:
   path: ^1.8.3
   objectbox: ^2.3.1
   objectbox_flutter_libs: ^2.3.1
-
+  photo_view: ^0.14.0
+  fast_cached_network_image: ^1.2.0
+  
 dependency_overrides:
   flutter_layout_grid: ^2.0.4
   file: ^6.1.4

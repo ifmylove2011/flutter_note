@@ -229,6 +229,16 @@ class S {
       args: [],
     );
   }
+
+  /// `No More`
+  String get noMore {
+    return Intl.message(
+      'No More',
+      name: 'noMore',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

@@ -16,5 +16,6 @@
     "recording":"Recording",
     "camera":"Camera",
     "alarm":"Alarm",
-    "attach":"Attach"
+    "attach":"Attach",
+    "noMore":"No More"
 }
