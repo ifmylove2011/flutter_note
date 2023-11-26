@@ -4,6 +4,7 @@ class Constant {
   static const HOME_IMG = "/images/panda1.jpeg";
   static const IS_MONSONRY = "is_monsonry";
   static const HOME_LAYOUT_STYLE = "home_layout_style";
+  static const DETAIL_LAYOUT_STYLE = "detail_layout_style";
 }
 
 class Global {
@@ -62,4 +63,6 @@ class RouteNames {
   static const WEB = "web";
   static const MOMO = "momo";
   static const MOMO_DETAIL = "momo_detail";
+  static const MEIYING = "meiying";
+  static const MEIYING_DETAIL = "meiying_detail";
 }

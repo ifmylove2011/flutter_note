@@ -36,6 +36,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "home": MessageLookupByLibrary.simpleMessage("首页"),
         "hyper_note": MessageLookupByLibrary.simpleMessage("混合笔记"),
         "literal_note": MessageLookupByLibrary.simpleMessage("文字笔记"),
+        "meiying": MessageLookupByLibrary.simpleMessage("魅影画廊"),
+        "momo": MessageLookupByLibrary.simpleMessage("Momo图库"),
         "noMore": MessageLookupByLibrary.simpleMessage("没有更多"),
         "recording": MessageLookupByLibrary.simpleMessage("录音"),
         "settings": MessageLookupByLibrary.simpleMessage("设置"),

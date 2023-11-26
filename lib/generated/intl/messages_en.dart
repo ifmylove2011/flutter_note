@@ -36,6 +36,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "home": MessageLookupByLibrary.simpleMessage("Home"),
         "hyper_note": MessageLookupByLibrary.simpleMessage("Hyper"),
         "literal_note": MessageLookupByLibrary.simpleMessage("Literal"),
+        "meiying": MessageLookupByLibrary.simpleMessage("MeiYing gallery"),
+        "momo": MessageLookupByLibrary.simpleMessage("Momo gallery"),
         "noMore": MessageLookupByLibrary.simpleMessage("No More"),
         "recording": MessageLookupByLibrary.simpleMessage("Recording"),
         "settings": MessageLookupByLibrary.simpleMessage("Settings"),

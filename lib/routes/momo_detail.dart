@@ -14,6 +14,7 @@ import 'package:objectbox/objectbox.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:transparent_image/transparent_image.dart';
 import 'package:web_scraper/web_scraper.dart';
 import 'package:webview_flutter/webview_flutter.dart';
@@ -42,10 +43,17 @@ class _MomoDetailRouteState extends State<MomoDetailRoute> {
   late ScrollController _scrollController;
   // final database = Provider.of<AppDatabase>(context);
   late FToast fToast;
+  var layoutStyle = Layout.grid.index;
 
   @override
   void initState() {
     loading = true;
+    Future(() async {
+      return await SharedPreferences.getInstance();
+    }).then((prefs) {
+      layoutStyle =
+          prefs.getInt(Constant.DETAIL_LAYOUT_STYLE) ?? Layout.grid.index;
+    });
     fToast = FToast();
     fToast.init(context);
     requestMomoDetail();
@@ -89,8 +97,33 @@ class _MomoDetailRouteState extends State<MomoDetailRoute> {
               },
             );
           }),
+          actions: [
+            IconButton(
+                onPressed: _switchLayoutGrid,
+                icon: Icon(
+                    layoutStyle == Layout.list.index
+                        ? Icons.list
+                        : Icons.grid_on,
+                    color: Colors.lightGreen)),
+          ],
         ),
         body: layout == 0 ? _bodyDetail() : _photoView());
+  }
+
+  /// 切换列表/方格/瀑布视图
+  void _switchLayoutGrid() {
+    if (layoutStyle == Layout.list.index) {
+      layoutStyle = Layout.monsonry.index;
+    } else if (layoutStyle == Layout.monsonry.index) {
+      layoutStyle = Layout.list.index;
+    }
+    Future(() async {
+      return await SharedPreferences.getInstance();
+    }).then((prefs) {
+      prefs.setInt(Constant.DETAIL_LAYOUT_STYLE, layoutStyle);
+    });
+    debugPrint("layoutStyle=$layoutStyle");
+    setState(() {});
   }
 
   Widget _photoView() {
@@ -143,9 +176,8 @@ class _MomoDetailRouteState extends State<MomoDetailRoute> {
                     },
                     childCount: momoDetails.length,
                   ),
-                  gridDelegate:
-                      const SliverSimpleGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
+                  gridDelegate: SliverSimpleGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: layoutStyle == 0 ? 1 : 2,
                   )),
             ],
           ));
@@ -156,8 +188,8 @@ class _MomoDetailRouteState extends State<MomoDetailRoute> {
       child: MasonryGridView.builder(
         controller: _scrollController,
         shrinkWrap: true,
-        gridDelegate: const SliverSimpleGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
+        gridDelegate: SliverSimpleGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: layoutStyle == 0 ? 1 : 2,
         ),
         itemBuilder: (BuildContext context, int index) {
           return _itemDetail(index);

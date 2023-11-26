@@ -239,6 +239,26 @@ class S {
       args: [],
     );
   }
+
+  /// `Momo gallery`
+  String get momo {
+    return Intl.message(
+      'Momo gallery',
+      name: 'momo',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `MeiYing gallery`
+  String get meiying {
+    return Intl.message(
+      'MeiYing gallery',
+      name: 'meiying',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

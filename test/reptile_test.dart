@@ -12,6 +12,77 @@ import 'package:web_scraper/web_scraper.dart';
 void main() {
   HttpOverrides.global = MyHttpOverrides();
   WebScraper webScraperMomo = WebScraper();
+
+  group('meiying test', () {
+    test('meiying test', () async {
+      bool page = await webScraperMomo.loadFullURL(
+          'https://myhl5.uno/%e6%9c%80%e6%96%b0%e5%8f%91%e5%b8%83');
+      expect(page, true);
+    });
+    // test('Gets Page Content & Loads from String', () {
+    //   final pageContent = webScraperMomo.getPageContent();
+    //   expect(pageContent, isA<String>());
+    //   print(pageContent);
+    // });
+    test('Get Element ', () {
+      List<Map<String, dynamic>> meiyings = [];
+      List<Element> posts = webScraperMomo.selects('div.post.grid.grid-zz');
+      for (var post in posts) {
+        Map<String, dynamic> meiying = Map();
+
+        // print(article.querySelector('h2')!.text);
+        // print(article.querySelector('a')!.attributes['href']);
+        // print(article.querySelector('a img')!.attributes['data-src']);
+        // print(article.querySelector('footer a')!.attributes['data-pid']);
+        // print(article.querySelector('a div')!.text);
+        meiying['id'] = int.parse(post.attributes['data-id']!);
+        meiying['title'] = post.querySelector('div.img a')!.attributes['title'];
+        meiying['detail_url'] =
+            post.querySelector('div.img a')!.attributes['href'];
+        meiying['post_url'] =
+            post.querySelector('div.img a img')!.attributes['data-src'];
+        meiying['desc_num'] = post.querySelector('div.img a div.num')!.text;
+        meiying['author'] = post.querySelector('div.grid-author a span')!.text;
+        meiying['page'] = 1;
+        meiyings.add(meiying);
+      }
+      String jsonS = json.encode(meiyings);
+      print(jsonS);
+      // var names =
+      //     webScraperMomo.getElement('article a', ['href', 'data-src', 'h2']);
+      // expect(names, isNotEmpty);
+      // print(names);
+      expect(posts, isNotEmpty);
+    });
+  });
+
+  group('meiying detail test', () {
+    test('meiying detail test', () async {
+      bool page =
+          await webScraperMomo.loadFullURL('https://myhl5.uno/45122.html');
+      expect(page, true);
+    });
+    // test('Gets Page Content & Loads from String', () {
+    //   final pageContent = webScraperMomo.getPageContent();
+    //   expect(pageContent, isA<String>());
+    //   print(pageContent);
+    // });
+    test('Get Element ', () {
+      List<Map<String, dynamic>> details = [];
+      List<Element> thumbnails =
+          webScraperMomo.selects('div.gallery-item.gallery-fancy-item a');
+      for (var thumbnail in thumbnails) {
+        Map<String, dynamic> detail = {};
+        detail['img_url'] = thumbnail.attributes['href'];
+        detail['detail_id'] = 45122;
+        details.add(detail);
+      }
+      String jsonS = json.encode(details);
+      print(jsonS);
+      expect(thumbnails, isNotEmpty);
+    });
+  });
+
   group('momo test', () {
     test('momo test', () async {
       bool page =

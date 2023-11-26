@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter_note/common/model/reptile/mei_ying.dart';
 import 'package:html/dom.dart';
 
 import 'package:flutter/services.dart';
@@ -9,12 +10,15 @@ import 'package:flutter_note/objectbox.g.dart';
 import 'package:web_scraper/web_scraper.dart';
 
 import '../../main.dart';
+import '../model/reptile/mei_ying_detail.dart';
 import '../model/reptile/momo_detail.dart';
 
 class ReptileService {
   static ReptileService? _instance;
   final momoBox = objectBox.store.box<Momo>();
   final momoDetailBox = objectBox.store.box<MomoDetail>();
+  final meiyingBox = objectBox.store.box<MeiYing>();
+  final meiyingDetailBox = objectBox.store.box<MeiYingDetail>();
 
   factory ReptileService() {
     _instance ??= ReptileService._internal();
@@ -46,6 +50,31 @@ class ReptileService {
       momoDetailBox.putManyAsync(momoDetails);
     }
     return momoDetails;
+  }
+
+  getMeiying(int page) async {
+    List<MeiYing> meiyings = await getMeiYingDB(page);
+    print("db meiying.size=${meiyings.length}");
+    if (meiyings.isEmpty) {
+      String? res = await requestMeiyingPost(page);
+      meiyings = JSON().fromJson(res, List<MeiYing>);
+      // print(momos);
+      // momos.sort((a, b) => a.id!.compareTo(b.id!));
+      meiyingBox.putManyAsync(meiyings);
+    }
+    return meiyings;
+  }
+
+  getMeiYingDetail(int detailId) async {
+    List<MeiYingDetail> meiyingDetails = await getMeiYingDetailDB(detailId);
+    print("db meiyingDetail.size=${meiyingDetails.length}");
+    if (meiyingDetails.isEmpty) {
+      String? res = await requestMeiyingDetail(detailId);
+      meiyingDetails = JSON().fromJson(res, List<MeiYingDetail>);
+      // momoDetails.sort((a, b) => b.id!.compareTo(a.id!));
+      meiyingDetailBox.putManyAsync(meiyingDetails);
+    }
+    return meiyingDetails;
   }
 
   Future<String?> requestMomoPost(int page) async {
@@ -106,6 +135,58 @@ class ReptileService {
     }
   }
 
+  Future<String?> requestMeiyingPost(int page) async {
+    WebScraper webScraperMomo = WebScraper();
+    String dest =
+        'https://myhl5.uno/%e6%9c%80%e6%96%b0%e5%8f%91%e5%b8%83/page/$page';
+    print(dest);
+    bool called = await webScraperMomo.loadFullURL(dest);
+    if (called) {
+      print("scrapying ... loading ... $page");
+      List<Map<String, dynamic>> meiyings = [];
+      List<Element> posts = webScraperMomo.selects('div.post.grid.grid-zz');
+      for (var post in posts) {
+        Map<String, dynamic> meiying = {};
+        meiying['id'] = int.parse(post.attributes['data-id']!);
+        meiying['title'] = post.querySelector('div.img a')!.attributes['title'];
+        meiying['detail_url'] =
+            post.querySelector('div.img a')!.attributes['href'];
+        meiying['post_url'] =
+            post.querySelector('div.img a img')!.attributes['data-src'];
+        meiying['desc_num'] = post.querySelector('div.img a div.num')!.text;
+        meiying['author'] = post.querySelector('div.grid-author a span')!.text;
+        meiying['page'] = 1;
+        meiyings.add(meiying);
+      }
+      String jsonS = json.encode(meiyings);
+      return jsonS;
+    } else {
+      return null;
+    }
+  }
+
+  Future<String?> requestMeiyingDetail(int detailId) async {
+    WebScraper webScraperMomo = WebScraper();
+    bool called =
+        await webScraperMomo.loadFullURL('https://myhl5.uno/$detailId.html');
+    if (called) {
+      print("scrapying ... loading ... detail ... ");
+      List<Map<String, dynamic>> details = [];
+      List<Element> thumbnails =
+          webScraperMomo.selects('div.gallery-item.gallery-fancy-item a');
+      for (var thumbnail in thumbnails) {
+        Map<String, dynamic> detail = {};
+        detail['img_url'] = thumbnail.attributes['href'];
+        detail['detail_id'] = detailId;
+        details.add(detail);
+      }
+      String jsonS = json.encode(details);
+      return jsonS;
+    } else {
+      return null;
+    }
+  }
+
   Future<List<Momo>> getMomoDB(int page) async {
     // if (momoBox.isEmpty()) {
     //   return List.empty();
@@ -140,6 +221,30 @@ class ReptileService {
     return momos;
   }
 
+  Future<List<MeiYing>> getMeiYingDB(int page) async {
+    // if (MeiYing.isEmpty()) {
+    //   return List.empty();
+    // }
+    Query<MeiYing> query = meiyingBox
+        .query(MeiYing_.page.equals(page))
+        .order(MeiYing_.id, flags: Order.descending)
+        .build();
+    List<MeiYing> meiyings = await query.findAsync();
+    return meiyings;
+  }
+
+  Future<List<MeiYingDetail>> getMeiYingDetailDB(int detailId) async {
+    // if (meiyingDetailBox.isEmpty()) {
+    //   return List.empty();
+    // }
+    Query<MeiYingDetail> query = meiyingDetailBox
+        .query(MeiYingDetail_.detailId.equals(detailId))
+        .order(MeiYingDetail_.imgUrl, flags: Order.descending)
+        .build();
+    List<MeiYingDetail> momos = await query.findAsync();
+    return momos;
+  }
+
   getMomoLocal() async {
     var res = await rootBundle.loadString("assets/data/momo.json");
     // print(res);
@@ -151,6 +256,21 @@ class ReptileService {
     var res = await rootBundle.loadString("assets/data/momo_33804.json");
     // print(res);
     List<MomoDetail> result = JSON().fromJson(res.toString(), List<MomoDetail>);
+    return result;
+  }
+
+  getMeiYingLocal() async {
+    var res = await rootBundle.loadString("assets/data/meiying.json");
+    // print(res);
+    List<MeiYing> result = JSON().fromJson(res.toString(), List<MeiYing>);
+    return result;
+  }
+
+  getMeiYingDetailLocal(int meiyingId, int page) async {
+    var res = await rootBundle.loadString("assets/data/meiying_45122.json");
+    // print(res);
+    List<MeiYingDetail> result =
+        JSON().fromJson(res.toString(), List<MeiYingDetail>);
     return result;
   }
 }

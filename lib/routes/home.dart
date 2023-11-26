@@ -119,13 +119,16 @@ class _HomeRouteState extends State<HomeRoute> {
         itemBuilder: (BuildContext context) {
           return [
             PopupMenuItem(
-              child: Text("Momo"),
+              child: Text(S.current.momo),
               onTap: () {
                 Navigator.of(context).pushNamed(RouteNames.MOMO);
               },
             ),
             PopupMenuItem(
-              child: Text("Weixin"),
+              child: Text(S.current.meiying),
+              onTap: () {
+                Navigator.of(context).pushNamed(RouteNames.MEIYING);
+              },
             ),
             PopupMenuItem(
               child: Text("QQ"),

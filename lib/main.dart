@@ -11,6 +11,8 @@ import 'package:flutter_note/common/db/objectbox.dart';
 import 'package:flutter_note/generated/l10n.dart';
 import 'package:flutter_note/routes/add_note.dart';
 import 'package:flutter_note/routes/home.dart';
+import 'package:flutter_note/routes/meiying.dart';
+import 'package:flutter_note/routes/meiying_detail.dart';
 import 'package:flutter_note/routes/mine.dart';
 import 'package:flutter_note/routes/momo.dart';
 import 'package:flutter_note/routes/news_detail.dart';
@@ -81,6 +83,8 @@ class NoteApp extends StatelessWidget {
         RouteNames.WEB: (context) => WebNoteRoute(),
         RouteNames.MOMO: (context) => MomoRoute(),
         RouteNames.MOMO_DETAIL: (context) => MomoDetailRoute(),
+        RouteNames.MEIYING: (context) => MeiYingRoute(),
+        RouteNames.MEIYING_DETAIL: (context) => MeiYingDetailRoute(),
       },
     ));
   }

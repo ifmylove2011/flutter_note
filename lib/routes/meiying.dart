@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:fast_cached_network_image/fast_cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_note/common/constant.dart';
+import 'package:flutter_note/common/model/reptile/mei_ying.dart';
 import 'package:flutter_note/common/model/reptile/momo.dart';
 import 'package:flutter_note/common/model/reptile/momo_detail.dart';
 import 'package:flutter_note/common/net/reptile_service.dart';
@@ -19,18 +20,17 @@ import '../common/db/objectbox.dart';
 import '../generated/l10n.dart';
 import '../widgets/function_w.dart';
 
-class MomoRoute extends StatefulWidget {
+class MeiYingRoute extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return _MomoRouteState();
+    return _MeiYingRouteState();
   }
 }
 
-class _MomoRouteState extends State<MomoRoute> {
+class _MeiYingRouteState extends State<MeiYingRoute> {
   late ScrollController _scrollController;
-  final momoBox = objectBox.store.box<Momo>();
-  List<Momo> momos = [];
-  List<MomoDetail> momoDetails = [];
+  final meiyingBox = objectBox.store.box<MeiYing>();
+  List<MeiYing> meiyings = [];
   int page = 1;
   bool loading = false;
   WebScraper webScraperMomo = WebScraper();
@@ -39,7 +39,7 @@ class _MomoRouteState extends State<MomoRoute> {
   @override
   void initState() {
     loading = true;
-    requestMomo();
+    requestMeiying();
     _scrollController = ScrollController();
     _scrollController.addListener(() {
       if (_scrollController.position.extentAfter == 0) {
@@ -53,7 +53,7 @@ class _MomoRouteState extends State<MomoRoute> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text(S.current.momo),
+          title: Text(S.current.meiying),
           leading: Builder(builder: (context) {
             return IconButton(
               icon: const Icon(Icons.arrow_back,
@@ -85,7 +85,7 @@ class _MomoRouteState extends State<MomoRoute> {
                     (context, index) {
                       return _item(index);
                     },
-                    childCount: momos.length,
+                    childCount: meiyings.length,
                   ),
                   gridDelegate:
                       const SliverSimpleGridDelegateWithFixedCrossAxisCount(
@@ -106,7 +106,7 @@ class _MomoRouteState extends State<MomoRoute> {
         itemBuilder: (BuildContext context, int index) {
           return _item(index);
         },
-        itemCount: momos.length,
+        itemCount: meiyings.length,
       ),
     );
   }
@@ -114,7 +114,7 @@ class _MomoRouteState extends State<MomoRoute> {
   Future _loadMore() async {
     print("loading more ...");
     page++;
-    requestMomo();
+    requestMeiying();
   }
 
   Widget _item(int index) {
@@ -133,7 +133,7 @@ class _MomoRouteState extends State<MomoRoute> {
                     style: const TextStyle(
                         fontWeight: FontWeight.bold, fontSize: 11),
                     textAlign: TextAlign.start,
-                    momos[index].title!,
+                    meiyings[index].title!,
                   ),
                   Stack(children: <Widget>[
                     const Column(
@@ -145,7 +145,7 @@ class _MomoRouteState extends State<MomoRoute> {
                       ],
                     ),
                     FastCachedImage(
-                      url: momos[index].postUrl!,
+                      url: meiyings[index].postUrl!,
                       fit: BoxFit.cover,
                       fadeInDuration: const Duration(seconds: 1),
                       errorBuilder: (context, exception, stacktrace) {
@@ -178,14 +178,14 @@ class _MomoRouteState extends State<MomoRoute> {
                       Text(
                         style: const TextStyle(color: Colors.black54),
                         textAlign: TextAlign.start,
-                        momos[index].dataPid.toString(),
+                        meiyings[index].author.toString(),
                         textScaleFactor: 0.8,
                       ),
                       const Spacer(),
                       Text(
                         style: const TextStyle(color: Colors.black54),
                         textAlign: TextAlign.end,
-                        momos[index].descNum!,
+                        meiyings[index].descNum!,
                         textScaleFactor: 0.8,
                       ),
                     ],
@@ -194,29 +194,28 @@ class _MomoRouteState extends State<MomoRoute> {
               ),
             ),
             onTap: () {
-              print(momos[index]);
-              Navigator.pushNamed(context, RouteNames.MOMO_DETAIL,
-                  arguments: momos[index]);
+              print(meiyings[index]);
+              Navigator.pushNamed(context, RouteNames.MEIYING_DETAIL,
+                  arguments: meiyings[index]);
             },
           )),
     );
   }
 
-  void requestMomo() {
+  void requestMeiying() {
     Future(() async {
       setState(() {
         loading = true;
       });
-      // List<Momo> momos = await momoBox.getAllAsync();
-      // debugPrint("in db momo.size=${momos.length}");
-      // return await webScraperMomo.loadFullURL('https://momotk.uno/');
-      return await ReptileService().getMomo(page);
+      return await ReptileService().getMeiying(page);
+      // return await ReptileService().getMeiYingLocal();
     }).then((value) {
-      List<Momo> temp = value!.toList();
-      temp.addAll(momos);
-      momos = temp.toSet().toList();
-      momos.sort((a, b) => b.dataPid!.compareTo(a.dataPid!));
-      debugPrint("momo.size=${momos.length}");
+      List<MeiYing> temp = value!.toList();
+      temp.addAll(meiyings);
+      meiyings = temp.toSet().toList();
+      meiyings.sort((a, b) => b.id!.compareTo(a.id!));
+      // print(meiyings.toString());
+      debugPrint("meiyings.size=${meiyings.length}");
       setState(() {
         loading = false;
       });

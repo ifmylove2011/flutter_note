@@ -3,78 +3,147 @@ import 'dart:io';
 import 'package:fast_cached_network_image/fast_cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_note/common/constant.dart';
+import 'package:flutter_note/common/model/reptile/mei_ying.dart';
+import 'package:flutter_note/common/model/reptile/mei_ying_detail.dart';
 import 'package:flutter_note/common/model/reptile/momo.dart';
 import 'package:flutter_note/common/model/reptile/momo_detail.dart';
 import 'package:flutter_note/common/net/reptile_service.dart';
 import 'package:flutter_note/main.dart';
 import 'package:flutter_note/widgets/derate.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:objectbox/objectbox.dart';
+import 'package:photo_view/photo_view.dart';
+import 'package:photo_view/photo_view_gallery.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:transparent_image/transparent_image.dart';
 import 'package:web_scraper/web_scraper.dart';
 import 'package:webview_flutter/webview_flutter.dart';
-
+import 'package:flutter_note/generated/l10n.dart';
 import '../common/db/objectbox.dart';
-import '../generated/l10n.dart';
 import '../widgets/function_w.dart';
 
-class MomoRoute extends StatefulWidget {
+class MeiYingDetailRoute extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return _MomoRouteState();
+    return _MeiYingDetailRouteState();
   }
 }
 
-class _MomoRouteState extends State<MomoRoute> {
-  late ScrollController _scrollController;
-  final momoBox = objectBox.store.box<Momo>();
-  List<Momo> momos = [];
-  List<MomoDetail> momoDetails = [];
-  int page = 1;
+class _MeiYingDetailRouteState extends State<MeiYingDetailRoute> {
+  final meiyingDetailBox = objectBox.store.box<MeiYingDetail>();
+  List<MeiYingDetail> meiyingDetails = [];
   bool loading = false;
+  int currentIndex = 0;
+  int layout = 0;
+  late MeiYing meiying;
+  double currentOffet = 0;
   WebScraper webScraperMomo = WebScraper();
   // final database = Provider.of<AppDatabase>(context);
+  final titleReg = new RegExp(r'\d+-\d+');
+  var layoutStyle = Layout.grid.index;
 
   @override
   void initState() {
     loading = true;
-    requestMomo();
-    _scrollController = ScrollController();
-    _scrollController.addListener(() {
-      if (_scrollController.position.extentAfter == 0) {
-        _loadMore();
-      }
+    Future(() async {
+      return await SharedPreferences.getInstance();
+    }).then((prefs) {
+      layoutStyle =
+          prefs.getInt(Constant.DETAIL_LAYOUT_STYLE) ?? Layout.grid.index;
     });
+    requestMeiyingDetail();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    meiying = ModalRoute.of(context)?.settings.arguments as MeiYing;
+
     return Scaffold(
         appBar: AppBar(
-          title: Text(S.current.momo),
+          title: Text('${meiying.title}'),
           leading: Builder(builder: (context) {
             return IconButton(
               icon: const Icon(Icons.arrow_back,
                   color: Colors.lightGreen), //自定义图标
               onPressed: () {
-                Navigator.of(context).pop();
+                if (layout == 0) {
+                  Navigator.of(context).pop();
+                } else {
+                  layout = 0;
+                  setState(() {});
+                }
               },
             );
           }),
+          actions: [
+            IconButton(
+                onPressed: _switchLayoutGrid,
+                icon: Icon(
+                    layoutStyle == Layout.list.index
+                        ? Icons.list
+                        : Icons.grid_on,
+                    color: Colors.lightGreen)),
+          ],
         ),
-        body: _body());
+        body: layout == 0 ? _bodyDetail() : _photoView());
   }
 
-  Widget _body() {
+  /// 切换列表/方格/瀑布视图
+  void _switchLayoutGrid() {
+    if (layoutStyle == Layout.list.index) {
+      layoutStyle = Layout.monsonry.index;
+    } else if (layoutStyle == Layout.monsonry.index) {
+      layoutStyle = Layout.list.index;
+    }
+    Future(() async {
+      return await SharedPreferences.getInstance();
+    }).then((prefs) {
+      prefs.setInt(Constant.DETAIL_LAYOUT_STYLE, layoutStyle);
+    });
+    debugPrint("layoutStyle=$layoutStyle");
+    setState(() {});
+  }
+
+  Widget _photoView() {
+    return PhotoViewGallery.builder(
+      scrollPhysics: const BouncingScrollPhysics(),
+      builder: (BuildContext context, int index) {
+        return PhotoViewGalleryPageOptions(
+          imageProvider: NetworkImage(meiyingDetails[index].imgUrl!),
+          initialScale: PhotoViewComputedScale.contained,
+          heroAttributes:
+              PhotoViewHeroAttributes(tag: meiyingDetails[index].imgUrl!),
+        );
+      },
+      itemCount: meiyingDetails.length,
+      loadingBuilder: (context, event) => Center(
+        child: SizedBox(
+          width: 30.0,
+          height: 30.0,
+          child: CircularProgressIndicator(
+            value: event == null
+                ? 0
+                : event.cumulativeBytesLoaded / event.expectedTotalBytes!,
+          ),
+        ),
+      ),
+      backgroundDecoration: const BoxDecoration(color: Colors.black45),
+      pageController: PageController(initialPage: currentIndex),
+      onPageChanged: (i) {
+        currentIndex = i;
+      },
+    );
+  }
+
+  Widget _bodyDetail() {
     if (Platform.isAndroid) {
       //处理因SliveApp存在ListView或GridView无法感知头部高度的问题
       return LoadingOverlay(
-          onRefresh: _loadMore,
           isLoading: loading,
           child: CustomScrollView(
-            controller: _scrollController,
             slivers: <Widget>[
               SliverOverlapInjector(
                 handle:
@@ -83,41 +152,32 @@ class _MomoRouteState extends State<MomoRoute> {
               SliverMasonryGrid(
                   delegate: SliverChildBuilderDelegate(
                     (context, index) {
-                      return _item(index);
+                      return _itemDetail(index);
                     },
-                    childCount: momos.length,
+                    childCount: meiyingDetails.length,
                   ),
-                  gridDelegate:
-                      const SliverSimpleGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
+                  gridDelegate: SliverSimpleGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: layoutStyle == 0 ? 1 : 2,
                   )),
             ],
           ));
     }
     return LoadingOverlay(
-      onRefresh: _loadMore,
       isLoading: loading,
       child: MasonryGridView.builder(
-        controller: _scrollController,
         shrinkWrap: true,
-        gridDelegate: const SliverSimpleGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
+        gridDelegate: SliverSimpleGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: layoutStyle == 0 ? 1 : 2,
         ),
         itemBuilder: (BuildContext context, int index) {
-          return _item(index);
+          return _itemDetail(index);
         },
-        itemCount: momos.length,
+        itemCount: meiyingDetails.length,
       ),
     );
   }
 
-  Future _loadMore() async {
-    print("loading more ...");
-    page++;
-    requestMomo();
-  }
-
-  Widget _item(int index) {
+  Widget _itemDetail(int index) {
     return Padding(
       padding: const EdgeInsets.all(5),
       child: DecoratedBox(
@@ -130,11 +190,10 @@ class _MomoRouteState extends State<MomoRoute> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    style: const TextStyle(
-                        fontWeight: FontWeight.bold, fontSize: 11),
-                    textAlign: TextAlign.start,
-                    momos[index].title!,
-                  ),
+                      style: const TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: 11),
+                      textAlign: TextAlign.start,
+                      titleReg.stringMatch(meiyingDetails[index].imgUrl!)!),
                   Stack(children: <Widget>[
                     const Column(
                       children: [
@@ -145,7 +204,7 @@ class _MomoRouteState extends State<MomoRoute> {
                       ],
                     ),
                     FastCachedImage(
-                      url: momos[index].postUrl!,
+                      url: meiyingDetails[index].imgUrl!,
                       fit: BoxFit.cover,
                       fadeInDuration: const Duration(seconds: 1),
                       errorBuilder: (context, exception, stacktrace) {
@@ -170,53 +229,34 @@ class _MomoRouteState extends State<MomoRoute> {
                     )
                     // FadeInImage.memoryNetwork(
                     //   placeholder: kTransparentImage,
-                    //   image: momos[index].postUrl!,
+                    //   image: momoDetails[index].imgUrl!,
                     // ),
-                  ]),
-                  Row(
-                    children: [
-                      Text(
-                        style: const TextStyle(color: Colors.black54),
-                        textAlign: TextAlign.start,
-                        momos[index].dataPid.toString(),
-                        textScaleFactor: 0.8,
-                      ),
-                      const Spacer(),
-                      Text(
-                        style: const TextStyle(color: Colors.black54),
-                        textAlign: TextAlign.end,
-                        momos[index].descNum!,
-                        textScaleFactor: 0.8,
-                      ),
-                    ],
-                  )
+                  ])
                 ],
               ),
             ),
             onTap: () {
-              print(momos[index]);
-              Navigator.pushNamed(context, RouteNames.MOMO_DETAIL,
-                  arguments: momos[index]);
+              print(meiyingDetails[index]);
+              currentIndex = index;
+              layout = 1;
+              setState(() {});
             },
           )),
     );
   }
 
-  void requestMomo() {
+  void requestMeiyingDetail() {
     Future(() async {
       setState(() {
         loading = true;
       });
-      // List<Momo> momos = await momoBox.getAllAsync();
-      // debugPrint("in db momo.size=${momos.length}");
-      // return await webScraperMomo.loadFullURL('https://momotk.uno/');
-      return await ReptileService().getMomo(page);
+      // return await ReptileService().getMomoDetailLocal(detail_id, page);
+      return await ReptileService().getMeiYingDetail(meiying.id!);
     }).then((value) {
-      List<Momo> temp = value!.toList();
-      temp.addAll(momos);
-      momos = temp.toSet().toList();
-      momos.sort((a, b) => b.dataPid!.compareTo(a.dataPid!));
-      debugPrint("momo.size=${momos.length}");
+      List<MeiYingDetail> temp = value!.toList();
+      meiyingDetails = temp.toSet().toList();
+      meiyingDetails.sort((a, b) => a.imgUrl!.compareTo(b.imgUrl!));
+      debugPrint("meiyingDetails.size=${meiyingDetails.length}");
       setState(() {
         loading = false;
       });

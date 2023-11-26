@@ -14,6 +14,8 @@ import 'package:objectbox/internal.dart'; // generated code can access "internal
 import 'package:objectbox/objectbox.dart';
 import 'package:objectbox_flutter_libs/objectbox_flutter_libs.dart';
 
+import 'common/model/reptile/mei_ying.dart';
+import 'common/model/reptile/mei_ying_detail.dart';
 import 'common/model/reptile/momo.dart';
 import 'common/model/reptile/momo_detail.dart';
 
@@ -107,6 +109,74 @@ final _entities = <ModelEntity>[
             flags: 0)
       ],
       relations: <ModelRelation>[],
+      backlinks: <ModelBacklink>[]),
+  ModelEntity(
+      id: const IdUid(3, 7977515300787085056),
+      name: 'MeiYing',
+      lastPropertyId: const IdUid(7, 1604221836264442792),
+      flags: 0,
+      properties: <ModelProperty>[
+        ModelProperty(
+            id: const IdUid(1, 3122138587440891481),
+            name: 'id',
+            type: 6,
+            flags: 129),
+        ModelProperty(
+            id: const IdUid(2, 589872150254232578),
+            name: 'title',
+            type: 9,
+            flags: 0),
+        ModelProperty(
+            id: const IdUid(3, 8895499115611433989),
+            name: 'detailUrl',
+            type: 9,
+            flags: 0),
+        ModelProperty(
+            id: const IdUid(4, 7657379068432997358),
+            name: 'postUrl',
+            type: 9,
+            flags: 0),
+        ModelProperty(
+            id: const IdUid(5, 4901804460664993268),
+            name: 'descNum',
+            type: 9,
+            flags: 0),
+        ModelProperty(
+            id: const IdUid(6, 5118596251854340557),
+            name: 'author',
+            type: 9,
+            flags: 0),
+        ModelProperty(
+            id: const IdUid(7, 1604221836264442792),
+            name: 'page',
+            type: 6,
+            flags: 0)
+      ],
+      relations: <ModelRelation>[],
+      backlinks: <ModelBacklink>[]),
+  ModelEntity(
+      id: const IdUid(4, 5980662944741225307),
+      name: 'MeiYingDetail',
+      lastPropertyId: const IdUid(3, 7751235435111974215),
+      flags: 0,
+      properties: <ModelProperty>[
+        ModelProperty(
+            id: const IdUid(1, 1328435859991254805),
+            name: 'id',
+            type: 6,
+            flags: 1),
+        ModelProperty(
+            id: const IdUid(2, 6915015614489668330),
+            name: 'imgUrl',
+            type: 9,
+            flags: 0),
+        ModelProperty(
+            id: const IdUid(3, 7751235435111974215),
+            name: 'detailId',
+            type: 6,
+            flags: 0)
+      ],
+      relations: <ModelRelation>[],
       backlinks: <ModelBacklink>[])
 ];
 
@@ -137,7 +207,7 @@ Future<Store> openStore(
 ModelDefinition getObjectBoxModel() {
   final model = ModelInfo(
       entities: _entities,
-      lastEntityId: const IdUid(2, 3534921696094948130),
+      lastEntityId: const IdUid(4, 5980662944741225307),
       lastIndexId: const IdUid(1, 1476286063050676806),
       lastRelationId: const IdUid(0, 0),
       lastSequenceId: const IdUid(0, 0),
@@ -260,6 +330,97 @@ ModelDefinition getObjectBoxModel() {
               const fb.Int64Reader().vTableGet(buffer, rootOffset, 14, 0);
           object.momo.attach(store);
           return object;
+        }),
+    MeiYing: EntityDefinition<MeiYing>(
+        model: _entities[2],
+        toOneRelations: (MeiYing object) => [],
+        toManyRelations: (MeiYing object) => {},
+        getId: (MeiYing object) => object.id,
+        setId: (MeiYing object, int id) {
+          object.id = id;
+        },
+        objectToFB: (MeiYing object, fb.Builder fbb) {
+          final titleOffset =
+              object.title == null ? null : fbb.writeString(object.title!);
+          final detailUrlOffset = object.detailUrl == null
+              ? null
+              : fbb.writeString(object.detailUrl!);
+          final postUrlOffset =
+              object.postUrl == null ? null : fbb.writeString(object.postUrl!);
+          final descNumOffset =
+              object.descNum == null ? null : fbb.writeString(object.descNum!);
+          final authorOffset =
+              object.author == null ? null : fbb.writeString(object.author!);
+          fbb.startTable(8);
+          fbb.addInt64(0, object.id ?? 0);
+          fbb.addOffset(1, titleOffset);
+          fbb.addOffset(2, detailUrlOffset);
+          fbb.addOffset(3, postUrlOffset);
+          fbb.addOffset(4, descNumOffset);
+          fbb.addOffset(5, authorOffset);
+          fbb.addInt64(6, object.page);
+          fbb.finish(fbb.endTable());
+          return object.id ?? 0;
+        },
+        objectFromFB: (Store store, ByteData fbData) {
+          final buffer = fb.BufferContext(fbData);
+          final rootOffset = buffer.derefObject(0);
+          final idParam =
+              const fb.Int64Reader().vTableGetNullable(buffer, rootOffset, 4);
+          final titleParam = const fb.StringReader(asciiOptimization: true)
+              .vTableGetNullable(buffer, rootOffset, 6);
+          final detailUrlParam = const fb.StringReader(asciiOptimization: true)
+              .vTableGetNullable(buffer, rootOffset, 8);
+          final postUrlParam = const fb.StringReader(asciiOptimization: true)
+              .vTableGetNullable(buffer, rootOffset, 10);
+          final descNumParam = const fb.StringReader(asciiOptimization: true)
+              .vTableGetNullable(buffer, rootOffset, 12);
+          final authorParam = const fb.StringReader(asciiOptimization: true)
+              .vTableGetNullable(buffer, rootOffset, 14);
+          final pageParam =
+              const fb.Int64Reader().vTableGetNullable(buffer, rootOffset, 16);
+          final object = MeiYing(
+              id: idParam,
+              title: titleParam,
+              detailUrl: detailUrlParam,
+              postUrl: postUrlParam,
+              descNum: descNumParam,
+              author: authorParam,
+              page: pageParam);
+
+          return object;
+        }),
+    MeiYingDetail: EntityDefinition<MeiYingDetail>(
+        model: _entities[3],
+        toOneRelations: (MeiYingDetail object) => [],
+        toManyRelations: (MeiYingDetail object) => {},
+        getId: (MeiYingDetail object) => object.id,
+        setId: (MeiYingDetail object, int id) {
+          object.id = id;
+        },
+        objectToFB: (MeiYingDetail object, fb.Builder fbb) {
+          final imgUrlOffset =
+              object.imgUrl == null ? null : fbb.writeString(object.imgUrl!);
+          fbb.startTable(4);
+          fbb.addInt64(0, object.id ?? 0);
+          fbb.addOffset(1, imgUrlOffset);
+          fbb.addInt64(2, object.detailId);
+          fbb.finish(fbb.endTable());
+          return object.id ?? 0;
+        },
+        objectFromFB: (Store store, ByteData fbData) {
+          final buffer = fb.BufferContext(fbData);
+          final rootOffset = buffer.derefObject(0);
+          final imgUrlParam = const fb.StringReader(asciiOptimization: true)
+              .vTableGetNullable(buffer, rootOffset, 6);
+          final detailIdParam =
+              const fb.Int64Reader().vTableGetNullable(buffer, rootOffset, 8);
+          final object = MeiYingDetail(
+              imgUrl: imgUrlParam, detailId: detailIdParam)
+            ..id =
+                const fb.Int64Reader().vTableGetNullable(buffer, rootOffset, 4);
+
+          return object;
         })
   };
 
@@ -317,4 +478,47 @@ class MomoDetail_ {
   /// see [MomoDetail.pageNum]
   static final pageNum =
       QueryIntegerProperty<MomoDetail>(_entities[1].properties[6]);
+}
+
+/// [MeiYing] entity fields to define ObjectBox queries.
+class MeiYing_ {
+  /// see [MeiYing.id]
+  static final id = QueryIntegerProperty<MeiYing>(_entities[2].properties[0]);
+
+  /// see [MeiYing.title]
+  static final title = QueryStringProperty<MeiYing>(_entities[2].properties[1]);
+
+  /// see [MeiYing.detailUrl]
+  static final detailUrl =
+      QueryStringProperty<MeiYing>(_entities[2].properties[2]);
+
+  /// see [MeiYing.postUrl]
+  static final postUrl =
+      QueryStringProperty<MeiYing>(_entities[2].properties[3]);
+
+  /// see [MeiYing.descNum]
+  static final descNum =
+      QueryStringProperty<MeiYing>(_entities[2].properties[4]);
+
+  /// see [MeiYing.author]
+  static final author =
+      QueryStringProperty<MeiYing>(_entities[2].properties[5]);
+
+  /// see [MeiYing.page]
+  static final page = QueryIntegerProperty<MeiYing>(_entities[2].properties[6]);
+}
+
+/// [MeiYingDetail] entity fields to define ObjectBox queries.
+class MeiYingDetail_ {
+  /// see [MeiYingDetail.id]
+  static final id =
+      QueryIntegerProperty<MeiYingDetail>(_entities[3].properties[0]);
+
+  /// see [MeiYingDetail.imgUrl]
+  static final imgUrl =
+      QueryStringProperty<MeiYingDetail>(_entities[3].properties[1]);
+
+  /// see [MeiYingDetail.detailId]
+  static final detailId =
+      QueryIntegerProperty<MeiYingDetail>(_entities[3].properties[2]);
 }
