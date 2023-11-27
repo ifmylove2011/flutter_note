@@ -10,8 +10,10 @@ import 'package:flutter_note/common/model/juhe/result.dart';
 import 'package:flutter_note/common/model/reptile/mei_ying.dart';
 import 'package:flutter_note/common/model/reptile/momo.dart';
 import 'package:flutter_note/common/model/reptile/momo_detail.dart';
+import 'package:flutter_note/common/model/reptile/xoxo_detail.dart';
 
 import 'reptile/mei_ying_detail.dart';
+import 'reptile/xoxo.dart';
 
 class JSON {
   factory JSON() => _instance;
@@ -58,6 +60,10 @@ class JSON {
         return MeiYing.fromJson(value) as T;
       case MeiYingDetail:
         return MeiYingDetail.fromJson(value) as T;
+      case Xoxo:
+        return Xoxo.fromJson(value) as T;
+      case XoxoDetail:
+        return XoxoDetail.fromJson(value) as T;
       default:
         throw const FormatException("no model provided for content");
     }
@@ -140,6 +146,16 @@ class JSON {
         return (value as List)
             .map<MeiYingDetail>((e) => fromJson(e, MeiYingDetail))
             .toList();
+      case Xoxo:
+        return Xoxo.fromJson(value);
+      case const (List<Xoxo>):
+        return (value as List).map<Xoxo>((e) => fromJson(e, Xoxo)).toList();
+      case XoxoDetail:
+        return XoxoDetail.fromJson(value);
+      case const (List<XoxoDetail>):
+        return (value as List)
+            .map<XoxoDetail>((e) => fromJson(e, XoxoDetail))
+            .toList();
       default:
         throw const FormatException("no model provided for content");
     }
@@ -188,6 +204,10 @@ class JSON {
           result = (data as MeiYing).toJson();
         case MeiYingDetail:
           result = (data as MeiYingDetail).toJson();
+        case Xoxo:
+          result = (data as Xoxo).toJson();
+        case XoxoDetail:
+          result = (data as XoxoDetail).toJson();
         default:
           print("no model provided toJson");
       }

@@ -4,6 +4,7 @@ import 'package:flukit/flukit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_note/common/constant.dart';
 import 'package:flutter_note/generated/l10n.dart';
+import 'package:flutter_note/routes/momo.dart';
 import 'package:flutter_note/widgets/bubble.dart';
 import 'package:flutter_note/widgets/bulletin_data.dart';
 import 'package:flutter_note/widgets/function_w.dart';
@@ -131,7 +132,10 @@ class _HomeRouteState extends State<HomeRoute> {
               },
             ),
             PopupMenuItem(
-              child: Text("QQ"),
+              child: Text(S.current.xoxo),
+              onTap: () {
+                Navigator.of(context).pushNamed(RouteNames.XOXO);
+              },
             ),
           ];
         },

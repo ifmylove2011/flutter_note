@@ -4,48 +4,52 @@ import 'package:collection/collection.dart';
 import 'package:objectbox/objectbox.dart';
 
 @Entity()
-class MeiYingDetail {
+class XoxoDetail {
   int? id;
-
+  String? title;
   @Unique()
   String? imgUrl;
   int? detailId;
 
-  MeiYingDetail({this.imgUrl, this.detailId});
+  XoxoDetail({this.title, this.imgUrl, this.detailId});
 
   @override
-  String toString() => 'MeiYingDetail(imgUrl: $imgUrl, detailId: $detailId)';
+  String toString() {
+    return 'XoxoDetail(title: $title, imgUrl: $imgUrl, detailId: $detailId)';
+  }
 
-  factory MeiYingDetail.fromMap(Map<String, dynamic> data) => MeiYingDetail(
+  factory XoxoDetail.fromMap(Map<String, dynamic> data) => XoxoDetail(
+        title: data['title'] as String?,
         imgUrl: data['img_url'] as String?,
         detailId: data['detail_id'] as int?,
       );
 
   Map<String, dynamic> toMap() => {
+        'title': title,
         'img_url': imgUrl,
         'detail_id': detailId,
       };
 
   /// `dart:convert`
   ///
-  /// Parses the string and returns the resulting Json object as [MeiYingDetail].
-  factory MeiYingDetail.fromJson(Map<String, dynamic> data) {
-    return MeiYingDetail.fromMap(data);
+  /// Parses the string and returns the resulting Json object as [XoxoDetail].
+  factory XoxoDetail.fromJson(Map<String, dynamic> data) {
+    return XoxoDetail.fromMap(data);
   }
 
   /// `dart:convert`
   ///
-  /// Converts [MeiYingDetail] to a JSON string.
+  /// Converts [XoxoDetail] to a JSON string.
   String toJson() => json.encode(toMap());
 
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    if (other is! MeiYingDetail) return false;
+    if (other is! XoxoDetail) return false;
     final mapEquals = const DeepCollectionEquality().equals;
     return mapEquals(other.toMap(), toMap());
   }
 
   @override
-  int get hashCode => imgUrl.hashCode ^ detailId.hashCode;
+  int get hashCode => title.hashCode ^ imgUrl.hashCode ^ detailId.hashCode;
 }

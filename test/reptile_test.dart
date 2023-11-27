@@ -11,7 +11,138 @@ import 'package:web_scraper/web_scraper.dart';
 
 void main() {
   HttpOverrides.global = MyHttpOverrides();
+  // WebScraper webScraperMomo = WebScraper();
   WebScraper webScraperMomo = WebScraper();
+
+  group('xoxo test', () {
+    test('xoxo test', () async {
+      bool page = await webScraperMomo
+          .loadFullURL('https://girl-boy.xofulitu2cb789.xyz/arttype/2000-1/');
+      expect(page, true);
+    });
+    // test('Gets Page Content & Loads from String', () {
+    //   final pageContent = webScraperMomo.getPageContent();
+    //   expect(pageContent, isA<String>());
+    //   print(pageContent);
+    // });
+    test('Get Element ', () {
+      List<Map<String, dynamic>> xoxos = [];
+      List<Element> posts = webScraperMomo.selects('div.picture-list > a');
+      for (var post in posts) {
+        Map<String, dynamic> xoxo = {};
+        String path = post.attributes['href']!;
+        xoxo['id'] = int.parse(path.split('/')[4]);
+        xoxo['title'] = post.querySelector('div.album-name')!.text;
+        xoxo['detail_url'] = 'https://girl-boy.xofulitu2cb789.xyz$path';
+        xoxo['post_url'] =
+            'https://girl-boy.xofulitu2cb789.xyz${post.querySelector('img')!.attributes['data-src']}';
+        xoxo['page'] = 1;
+        xoxos.add(xoxo);
+      }
+      String jsonS = json.encode(xoxos);
+      print(jsonS);
+      // var names =
+      //     webScraperMomo.getElement('article a', ['href', 'data-src', 'h2']);
+      // expect(names, isNotEmpty);
+      // print(names);
+      expect(posts, isNotEmpty);
+    });
+  });
+
+  group('xoxo detail test', () {
+    test('xoxo detail test', () async {
+      bool page = await webScraperMomo
+          .loadFullURL('https://girl-boy.xofulitu2cb789.xyz/art/pic/id/2267/');
+      expect(page, true);
+    });
+    // test('Gets Page Content & Loads from String', () {
+    //   final pageContent = webScraperMomo.getPageContent();
+    //   expect(pageContent, isA<String>());
+    //   print(pageContent);
+    // });
+    test('Get Element ', () {
+      List<Map<String, dynamic>> details = [];
+      List<Element> thumbnails = webScraperMomo.selects('div.picture-item');
+      for (var thumbnail in thumbnails) {
+        Map<String, dynamic> detail = {};
+        detail['title'] = thumbnail.querySelector('div.title')!.text.trim();
+        detail['img_url'] =
+            thumbnail.querySelector('a img')!.attributes['data-src'];
+        detail['detail_id'] = 2255;
+        // detail['page_num'] = pageNum;
+        // detail['page'] = 1;
+        details.add(detail);
+      }
+      String jsonS = json.encode(details);
+      print(jsonS);
+      expect(thumbnails, isNotEmpty);
+    });
+  });
+
+  group('lesmao test', () {
+    test('lesmao test', () async {
+      bool page = await webScraperMomo.loadFullURL('https://www.lesmao.co');
+      expect(page, true);
+    });
+    // test('Gets Page Content & Loads from String', () {
+    //   final pageContent = webScraperMomo.getPageContent();
+    //   expect(pageContent, isA<String>());
+    //   print(pageContent);
+    // });
+    test('Get Element ', () {
+      List<Map<String, dynamic>> lesmaos = [];
+      List<Element> posts = webScraperMomo.selects('div.photo > a');
+      for (var post in posts) {
+        Map<String, dynamic> lesmao = {};
+        String path = post.attributes['href']!;
+        lesmao['id'] = int.parse(path.split('-')[1]);
+        lesmao['title'] = post.querySelector('img')!.attributes['alt'];
+        lesmao['detail_url'] = 'https://www.lesmao.co/$path';
+        lesmao['post_url'] = post.querySelector('img')!.attributes['src'];
+        lesmao['page'] = 1;
+        lesmaos.add(lesmao);
+      }
+      String jsonS = json.encode(lesmaos);
+      print(jsonS);
+      // var names =
+      //     webScraperMomo.getElement('article a', ['href', 'data-src', 'h2']);
+      // expect(names, isNotEmpty);
+      // print(names);
+      expect(posts, isNotEmpty);
+    });
+  });
+
+  group('lesmao detail test', () {
+    test('lesmao detail test', () async {
+      bool page = await webScraperMomo
+          .loadFullURL('https://www.lesmao.co/thread-34400-1-1.html');
+      expect(page, true);
+    });
+    // test('Gets Page Content & Loads from String', () {
+    //   final pageContent = webScraperMomo.getPageContent();
+    //   expect(pageContent, isA<String>());
+    //   print(pageContent);
+    // });
+    test('Get Element ', () {
+      List<Map<String, dynamic>> details = [];
+      List<Element> thumbnails = webScraperMomo.selects('ul.adw li img');
+      // int pageNum = int.parse(webScraperMomo
+      //     .select('div.ngg-navigation > a.page-numbers')!
+      //     .attributes['data-pageid']!);
+      for (var thumbnail in thumbnails) {
+        Map<String, dynamic> detail = {};
+        detail['title'] = thumbnail.attributes['alt'];
+        detail['img_url'] = thumbnail.attributes['src'];
+        detail['detail_id'] = 34400;
+        // detail['page_num'] = pageNum;
+        detail['page'] = 1;
+        details.add(detail);
+      }
+      String jsonS = json.encode(details);
+      print(jsonS);
+      expect(thumbnails, isNotEmpty);
+    });
+  });
 
   group('meiying test', () {
     test('meiying test', () async {

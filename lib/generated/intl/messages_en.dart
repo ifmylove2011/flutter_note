@@ -42,6 +42,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "recording": MessageLookupByLibrary.simpleMessage("Recording"),
         "settings": MessageLookupByLibrary.simpleMessage("Settings"),
         "subTitle": MessageLookupByLibrary.simpleMessage("Note"),
-        "title": MessageLookupByLibrary.simpleMessage("Home")
+        "title": MessageLookupByLibrary.simpleMessage("Home"),
+        "xoxo": MessageLookupByLibrary.simpleMessage("XO gallery")
       };
 }

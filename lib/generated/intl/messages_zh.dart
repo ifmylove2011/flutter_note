@@ -42,6 +42,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "recording": MessageLookupByLibrary.simpleMessage("录音"),
         "settings": MessageLookupByLibrary.simpleMessage("设置"),
         "subTitle": MessageLookupByLibrary.simpleMessage("笔记"),
-        "title": MessageLookupByLibrary.simpleMessage("首页")
+        "title": MessageLookupByLibrary.simpleMessage("首页"),
+        "xoxo": MessageLookupByLibrary.simpleMessage("XO福利图")
       };
 }

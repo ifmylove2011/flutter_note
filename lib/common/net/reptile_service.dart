@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter_note/common/model/reptile/mei_ying.dart';
+import 'package:flutter_note/common/model/reptile/xoxo.dart';
 import 'package:html/dom.dart';
 
 import 'package:flutter/services.dart';
@@ -12,6 +13,7 @@ import 'package:web_scraper/web_scraper.dart';
 import '../../main.dart';
 import '../model/reptile/mei_ying_detail.dart';
 import '../model/reptile/momo_detail.dart';
+import '../model/reptile/xoxo_detail.dart';
 
 class ReptileService {
   static ReptileService? _instance;
@@ -19,6 +21,8 @@ class ReptileService {
   final momoDetailBox = objectBox.store.box<MomoDetail>();
   final meiyingBox = objectBox.store.box<MeiYing>();
   final meiyingDetailBox = objectBox.store.box<MeiYingDetail>();
+  final xoxoBox = objectBox.store.box<Xoxo>();
+  final xoxoDetailBox = objectBox.store.box<XoxoDetail>();
 
   factory ReptileService() {
     _instance ??= ReptileService._internal();
@@ -75,6 +79,31 @@ class ReptileService {
       meiyingDetailBox.putManyAsync(meiyingDetails);
     }
     return meiyingDetails;
+  }
+
+  getXoxo(int page) async {
+    List<Xoxo> xoxos = await getXoxoDB(page);
+    print("db xoxo.size=${xoxos.length}");
+    if (xoxos.isEmpty) {
+      String? res = await requestXoxoPost(page);
+      xoxos = JSON().fromJson(res, List<Xoxo>);
+      // print(momos);
+      // momos.sort((a, b) => a.id!.compareTo(b.id!));
+      xoxoBox.putManyAsync(xoxos);
+    }
+    return xoxos;
+  }
+
+  getXoxoDetail(int detailId) async {
+    List<XoxoDetail> xoxoDetails = await getXoxoDetailDB(detailId);
+    print("db xoxoDetail.size=${xoxoDetails.length}");
+    if (xoxoDetails.isEmpty) {
+      String? res = await requestXoxoDetail(detailId);
+      xoxoDetails = JSON().fromJson(res, List<XoxoDetail>);
+      // momoDetails.sort((a, b) => b.id!.compareTo(a.id!));
+      xoxoDetailBox.putManyAsync(xoxoDetails);
+    }
+    return xoxoDetails;
   }
 
   Future<String?> requestMomoPost(int page) async {
@@ -187,6 +216,58 @@ class ReptileService {
     }
   }
 
+  Future<String?> requestXoxoPost(int page) async {
+    WebScraper webScraperMomo = WebScraper();
+    String dest = 'https://girl-boy.xofulitu2cb789.xyz/arttype/2000-$page/';
+    print(dest);
+    bool called = await webScraperMomo.loadFullURL(dest);
+    if (called) {
+      print("scrapying ... loading ... $page");
+      List<Map<String, dynamic>> xoxos = [];
+      List<Element> posts = webScraperMomo.selects('div.picture-list > a');
+      for (var post in posts) {
+        Map<String, dynamic> xoxo = {};
+        String path = post.attributes['href']!;
+        xoxo['id'] = int.parse(path.split('/')[4]);
+        xoxo['title'] = post.querySelector('div.album-name')!.text;
+        xoxo['detail_url'] = 'https://girl-boy.xofulitu2cb789.xyz$path';
+        xoxo['post_url'] =
+            'https://girl-boy.xofulitu2cb789.xyz${post.querySelector('img')!.attributes['data-src']}';
+        xoxo['page'] = 1;
+        xoxos.add(xoxo);
+      }
+      String jsonS = json.encode(xoxos);
+      return jsonS;
+    } else {
+      return null;
+    }
+  }
+
+  Future<String?> requestXoxoDetail(int detailId) async {
+    WebScraper webScraperMomo = WebScraper();
+    bool called = await webScraperMomo.loadFullURL(
+        'https://girl-boy.xofulitu2cb789.xyz/art/pic/id/$detailId/');
+    if (called) {
+      print("scrapying ... loading ... detail ... ");
+      List<Map<String, dynamic>> details = [];
+      List<Element> thumbnails = webScraperMomo.selects('div.picture-item');
+      for (var thumbnail in thumbnails) {
+        Map<String, dynamic> detail = {};
+        detail['title'] = thumbnail.querySelector('div.title')!.text.trim();
+        detail['img_url'] =
+            'https://girl-boy.xofulitu2cb789.xyz${thumbnail.querySelector('a img')!.attributes['data-src']}';
+        detail['detail_id'] = 2255;
+        // detail['page_num'] = pageNum;
+        // detail['page'] = 1;
+        details.add(detail);
+      }
+      String jsonS = json.encode(details);
+      return jsonS;
+    } else {
+      return null;
+    }
+  }
+
   Future<List<Momo>> getMomoDB(int page) async {
     // if (momoBox.isEmpty()) {
     //   return List.empty();
@@ -245,6 +326,30 @@ class ReptileService {
     return momos;
   }
 
+  Future<List<Xoxo>> getXoxoDB(int page) async {
+    // if (MeiYing.isEmpty()) {
+    //   return List.empty();
+    // }
+    Query<Xoxo> query = xoxoBox
+        .query(Xoxo_.page.equals(page))
+        .order(Xoxo_.id, flags: Order.descending)
+        .build();
+    List<Xoxo> xoxos = await query.findAsync();
+    return xoxos;
+  }
+
+  Future<List<XoxoDetail>> getXoxoDetailDB(int detailId) async {
+    // if (meiyingDetailBox.isEmpty()) {
+    //   return List.empty();
+    // }
+    Query<XoxoDetail> query = xoxoDetailBox
+        .query(XoxoDetail_.detailId.equals(detailId))
+        .order(XoxoDetail_.imgUrl)
+        .build();
+    List<XoxoDetail> xoxoDetails = await query.findAsync();
+    return xoxoDetails;
+  }
+
   getMomoLocal() async {
     var res = await rootBundle.loadString("assets/data/momo.json");
     // print(res);
@@ -271,6 +376,20 @@ class ReptileService {
     // print(res);
     List<MeiYingDetail> result =
         JSON().fromJson(res.toString(), List<MeiYingDetail>);
+    return result;
+  }
+
+  getXoxoLocal() async {
+    var res = await rootBundle.loadString("assets/data/xoxo.json");
+    // print(res);
+    List<Xoxo> result = JSON().fromJson(res.toString(), List<MeiYing>);
+    return result;
+  }
+
+  getXoxoDetailLocal(int meiyingId, int page) async {
+    var res = await rootBundle.loadString("assets/data/xoxo_2255.json");
+    // print(res);
+    List<XoxoDetail> result = JSON().fromJson(res.toString(), List<XoxoDetail>);
     return result;
   }
 }

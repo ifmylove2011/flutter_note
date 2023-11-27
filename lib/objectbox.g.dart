@@ -18,6 +18,8 @@ import 'common/model/reptile/mei_ying.dart';
 import 'common/model/reptile/mei_ying_detail.dart';
 import 'common/model/reptile/momo.dart';
 import 'common/model/reptile/momo_detail.dart';
+import 'common/model/reptile/xoxo.dart';
+import 'common/model/reptile/xoxo_detail.dart';
 
 export 'package:objectbox/objectbox.dart'; // so that callers only have to import this file
 
@@ -169,9 +171,74 @@ final _entities = <ModelEntity>[
             id: const IdUid(2, 6915015614489668330),
             name: 'imgUrl',
             type: 9,
-            flags: 0),
+            flags: 2080,
+            indexId: const IdUid(2, 2271367505139409371)),
         ModelProperty(
             id: const IdUid(3, 7751235435111974215),
+            name: 'detailId',
+            type: 6,
+            flags: 0)
+      ],
+      relations: <ModelRelation>[],
+      backlinks: <ModelBacklink>[]),
+  ModelEntity(
+      id: const IdUid(5, 3554892029225246103),
+      name: 'Xoxo',
+      lastPropertyId: const IdUid(5, 1392389883135313977),
+      flags: 0,
+      properties: <ModelProperty>[
+        ModelProperty(
+            id: const IdUid(1, 400369273150038480),
+            name: 'id',
+            type: 6,
+            flags: 129),
+        ModelProperty(
+            id: const IdUid(2, 1582971901912987169),
+            name: 'title',
+            type: 9,
+            flags: 0),
+        ModelProperty(
+            id: const IdUid(3, 456342408214457448),
+            name: 'detailUrl',
+            type: 9,
+            flags: 0),
+        ModelProperty(
+            id: const IdUid(4, 732750677511412240),
+            name: 'postUrl',
+            type: 9,
+            flags: 0),
+        ModelProperty(
+            id: const IdUid(5, 1392389883135313977),
+            name: 'page',
+            type: 6,
+            flags: 0)
+      ],
+      relations: <ModelRelation>[],
+      backlinks: <ModelBacklink>[]),
+  ModelEntity(
+      id: const IdUid(6, 550759498544268981),
+      name: 'XoxoDetail',
+      lastPropertyId: const IdUid(4, 6718351517402176841),
+      flags: 0,
+      properties: <ModelProperty>[
+        ModelProperty(
+            id: const IdUid(1, 5273515685305308343),
+            name: 'id',
+            type: 6,
+            flags: 1),
+        ModelProperty(
+            id: const IdUid(2, 2783011669813131525),
+            name: 'title',
+            type: 9,
+            flags: 0),
+        ModelProperty(
+            id: const IdUid(3, 5478193475390506010),
+            name: 'imgUrl',
+            type: 9,
+            flags: 2080,
+            indexId: const IdUid(3, 6699475881340516779)),
+        ModelProperty(
+            id: const IdUid(4, 6718351517402176841),
             name: 'detailId',
             type: 6,
             flags: 0)
@@ -207,8 +274,8 @@ Future<Store> openStore(
 ModelDefinition getObjectBoxModel() {
   final model = ModelInfo(
       entities: _entities,
-      lastEntityId: const IdUid(4, 5980662944741225307),
-      lastIndexId: const IdUid(1, 1476286063050676806),
+      lastEntityId: const IdUid(6, 550759498544268981),
+      lastIndexId: const IdUid(3, 6699475881340516779),
       lastRelationId: const IdUid(0, 0),
       lastSequenceId: const IdUid(0, 0),
       retiredEntityUids: const [],
@@ -421,6 +488,90 @@ ModelDefinition getObjectBoxModel() {
                 const fb.Int64Reader().vTableGetNullable(buffer, rootOffset, 4);
 
           return object;
+        }),
+    Xoxo: EntityDefinition<Xoxo>(
+        model: _entities[4],
+        toOneRelations: (Xoxo object) => [],
+        toManyRelations: (Xoxo object) => {},
+        getId: (Xoxo object) => object.id,
+        setId: (Xoxo object, int id) {
+          object.id = id;
+        },
+        objectToFB: (Xoxo object, fb.Builder fbb) {
+          final titleOffset =
+              object.title == null ? null : fbb.writeString(object.title!);
+          final detailUrlOffset = object.detailUrl == null
+              ? null
+              : fbb.writeString(object.detailUrl!);
+          final postUrlOffset =
+              object.postUrl == null ? null : fbb.writeString(object.postUrl!);
+          fbb.startTable(6);
+          fbb.addInt64(0, object.id ?? 0);
+          fbb.addOffset(1, titleOffset);
+          fbb.addOffset(2, detailUrlOffset);
+          fbb.addOffset(3, postUrlOffset);
+          fbb.addInt64(4, object.page);
+          fbb.finish(fbb.endTable());
+          return object.id ?? 0;
+        },
+        objectFromFB: (Store store, ByteData fbData) {
+          final buffer = fb.BufferContext(fbData);
+          final rootOffset = buffer.derefObject(0);
+          final idParam =
+              const fb.Int64Reader().vTableGetNullable(buffer, rootOffset, 4);
+          final titleParam = const fb.StringReader(asciiOptimization: true)
+              .vTableGetNullable(buffer, rootOffset, 6);
+          final detailUrlParam = const fb.StringReader(asciiOptimization: true)
+              .vTableGetNullable(buffer, rootOffset, 8);
+          final postUrlParam = const fb.StringReader(asciiOptimization: true)
+              .vTableGetNullable(buffer, rootOffset, 10);
+          final pageParam =
+              const fb.Int64Reader().vTableGetNullable(buffer, rootOffset, 12);
+          final object = Xoxo(
+              id: idParam,
+              title: titleParam,
+              detailUrl: detailUrlParam,
+              postUrl: postUrlParam,
+              page: pageParam);
+
+          return object;
+        }),
+    XoxoDetail: EntityDefinition<XoxoDetail>(
+        model: _entities[5],
+        toOneRelations: (XoxoDetail object) => [],
+        toManyRelations: (XoxoDetail object) => {},
+        getId: (XoxoDetail object) => object.id,
+        setId: (XoxoDetail object, int id) {
+          object.id = id;
+        },
+        objectToFB: (XoxoDetail object, fb.Builder fbb) {
+          final titleOffset =
+              object.title == null ? null : fbb.writeString(object.title!);
+          final imgUrlOffset =
+              object.imgUrl == null ? null : fbb.writeString(object.imgUrl!);
+          fbb.startTable(5);
+          fbb.addInt64(0, object.id ?? 0);
+          fbb.addOffset(1, titleOffset);
+          fbb.addOffset(2, imgUrlOffset);
+          fbb.addInt64(3, object.detailId);
+          fbb.finish(fbb.endTable());
+          return object.id ?? 0;
+        },
+        objectFromFB: (Store store, ByteData fbData) {
+          final buffer = fb.BufferContext(fbData);
+          final rootOffset = buffer.derefObject(0);
+          final titleParam = const fb.StringReader(asciiOptimization: true)
+              .vTableGetNullable(buffer, rootOffset, 6);
+          final imgUrlParam = const fb.StringReader(asciiOptimization: true)
+              .vTableGetNullable(buffer, rootOffset, 8);
+          final detailIdParam =
+              const fb.Int64Reader().vTableGetNullable(buffer, rootOffset, 10);
+          final object = XoxoDetail(
+              title: titleParam, imgUrl: imgUrlParam, detailId: detailIdParam)
+            ..id =
+                const fb.Int64Reader().vTableGetNullable(buffer, rootOffset, 4);
+
+          return object;
         })
   };
 
@@ -521,4 +672,42 @@ class MeiYingDetail_ {
   /// see [MeiYingDetail.detailId]
   static final detailId =
       QueryIntegerProperty<MeiYingDetail>(_entities[3].properties[2]);
+}
+
+/// [Xoxo] entity fields to define ObjectBox queries.
+class Xoxo_ {
+  /// see [Xoxo.id]
+  static final id = QueryIntegerProperty<Xoxo>(_entities[4].properties[0]);
+
+  /// see [Xoxo.title]
+  static final title = QueryStringProperty<Xoxo>(_entities[4].properties[1]);
+
+  /// see [Xoxo.detailUrl]
+  static final detailUrl =
+      QueryStringProperty<Xoxo>(_entities[4].properties[2]);
+
+  /// see [Xoxo.postUrl]
+  static final postUrl = QueryStringProperty<Xoxo>(_entities[4].properties[3]);
+
+  /// see [Xoxo.page]
+  static final page = QueryIntegerProperty<Xoxo>(_entities[4].properties[4]);
+}
+
+/// [XoxoDetail] entity fields to define ObjectBox queries.
+class XoxoDetail_ {
+  /// see [XoxoDetail.id]
+  static final id =
+      QueryIntegerProperty<XoxoDetail>(_entities[5].properties[0]);
+
+  /// see [XoxoDetail.title]
+  static final title =
+      QueryStringProperty<XoxoDetail>(_entities[5].properties[1]);
+
+  /// see [XoxoDetail.imgUrl]
+  static final imgUrl =
+      QueryStringProperty<XoxoDetail>(_entities[5].properties[2]);
+
+  /// see [XoxoDetail.detailId]
+  static final detailId =
+      QueryIntegerProperty<XoxoDetail>(_entities[5].properties[3]);
 }

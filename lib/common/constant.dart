@@ -65,4 +65,6 @@ class RouteNames {
   static const MOMO_DETAIL = "momo_detail";
   static const MEIYING = "meiying";
   static const MEIYING_DETAIL = "meiying_detail";
+  static const XOXO = "xoxo";
+  static const XOXO_DETAIL = "xoxo_detail";
 }

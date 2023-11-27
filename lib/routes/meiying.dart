@@ -51,30 +51,48 @@ class _MeiYingRouteState extends State<MeiYingRoute> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          title: Text(S.current.meiying),
-          leading: Builder(builder: (context) {
-            return IconButton(
-              icon: const Icon(Icons.arrow_back,
-                  color: Colors.lightGreen), //自定义图标
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            );
-          }),
-        ),
-        body: _body());
+    return Scaffold(body: nestedBody());
   }
 
-  Widget _body() {
+  Widget nestedBody() {
+    return NestedScrollView(
+      controller: _scrollController,
+      headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+        return <Widget>[
+          SliverOverlapAbsorber(
+            handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+            sliver: SliverAppBar(
+              titleSpacing: 0,
+              leading: Builder(builder: (context) {
+                return IconButton(
+                  icon: const Icon(Icons.arrow_back,
+                      color: Colors.lightGreen), //自定义图标
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                );
+              }),
+              title: Text(S.current.meiying),
+              pinned: false,
+              snap: true,
+              floating: true,
+            ),
+          ),
+        ];
+      },
+      body: Builder(builder: (BuildContext context) {
+        return _body(context);
+      }),
+    );
+  }
+
+  Widget _body(BuildContext context) {
     if (Platform.isAndroid) {
       //处理因SliveApp存在ListView或GridView无法感知头部高度的问题
       return LoadingOverlay(
           onRefresh: _loadMore,
           isLoading: loading,
           child: CustomScrollView(
-            controller: _scrollController,
             slivers: <Widget>[
               SliverOverlapInjector(
                 handle:
@@ -98,7 +116,6 @@ class _MeiYingRouteState extends State<MeiYingRoute> {
       onRefresh: _loadMore,
       isLoading: loading,
       child: MasonryGridView.builder(
-        controller: _scrollController,
         shrinkWrap: true,
         gridDelegate: const SliverSimpleGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,

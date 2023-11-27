@@ -81,40 +81,69 @@ class _MomoDetailRouteState extends State<MomoDetailRoute> {
     momo = ModalRoute.of(context)?.settings.arguments as Momo;
 
     return Scaffold(
-        appBar: AppBar(
-          title: Text('${momo.title}'),
-          leading: Builder(builder: (context) {
-            return IconButton(
-              icon: const Icon(Icons.arrow_back,
-                  color: Colors.lightGreen), //自定义图标
-              onPressed: () {
-                if (layout == 0) {
-                  Navigator.of(context).pop();
-                } else {
-                  layout = 0;
-                  setState(() {});
-                }
-              },
-            );
-          }),
-          actions: [
-            IconButton(
-                onPressed: _switchLayoutGrid,
-                icon: Icon(
-                    layoutStyle == Layout.list.index
-                        ? Icons.list
-                        : Icons.grid_on,
-                    color: Colors.lightGreen)),
-          ],
-        ),
-        body: layout == 0 ? _bodyDetail() : _photoView());
+      body: PopScope(
+          canPop: layout == 0,
+          onPopInvoked: (bool pop) {
+            if (!pop) {
+              layout = 0;
+              setState(() {});
+            }
+          },
+          child: nestedBody()),
+    );
+  }
+
+  Widget nestedBody() {
+    return NestedScrollView(
+      // controller: _scrollController,
+      headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+        return <Widget>[
+          SliverOverlapAbsorber(
+            handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+            sliver: SliverAppBar(
+              titleSpacing: 0,
+              leading: Builder(builder: (context) {
+                return IconButton(
+                  icon: const Icon(Icons.arrow_back,
+                      color: Colors.lightGreen), //自定义图标
+                  onPressed: () {
+                    if (layout == 0) {
+                      Navigator.of(context).pop();
+                    } else {
+                      layout = 0;
+                      setState(() {});
+                    }
+                  },
+                );
+              }),
+              title: Text(momo.title!),
+              pinned: false,
+              snap: true,
+              floating: true,
+              actions: [
+                IconButton(
+                    onPressed: _switchLayoutGrid,
+                    icon: Icon(
+                        layoutStyle == Layout.list.index
+                            ? Icons.list
+                            : Icons.grid_on,
+                        color: Colors.lightGreen)),
+              ],
+            ),
+          ),
+        ];
+      },
+      body: Builder(builder: (BuildContext context) {
+        return layout == 0 ? _bodyDetail(context) : _photoView();
+      }),
+    );
   }
 
   /// 切换列表/方格/瀑布视图
   void _switchLayoutGrid() {
     if (layoutStyle == Layout.list.index) {
       layoutStyle = Layout.monsonry.index;
-    } else if (layoutStyle == Layout.monsonry.index) {
+    } else {
       layoutStyle = Layout.list.index;
     }
     Future(() async {
@@ -156,7 +185,7 @@ class _MomoDetailRouteState extends State<MomoDetailRoute> {
     );
   }
 
-  Widget _bodyDetail() {
+  Widget _bodyDetail(BuildContext context) {
     if (Platform.isAndroid) {
       //处理因SliveApp存在ListView或GridView无法感知头部高度的问题
       return LoadingOverlay(

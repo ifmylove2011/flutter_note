@@ -197,15 +197,12 @@ class _NewsListState extends State<NewsList> {
         textScaleFactor: 1,
       );
     } else {
-      return Stack(children: <Widget>[
-        const Center(child: CircularProgressIndicator()),
-        Center(
-          child: FadeInImage.memoryNetwork(
-            placeholder: kTransparentImage,
-            image: news.thumbnailPicS!,
-          ),
-        )
-      ]);
+      return Center(
+        child: FadeInImage.memoryNetwork(
+          placeholder: kTransparentImage,
+          image: news.thumbnailPicS!,
+        ),
+      );
     }
   }
 
@@ -227,7 +224,7 @@ class _NewsListState extends State<NewsList> {
       setState(() {
         loading = true;
       });
-      return await JuheService.getNewsLocal();
+      return await JuheService.getNews(page);
     }).then((value) {
       List<News> temp = value!.reversed.toList();
       temp.addAll(news);

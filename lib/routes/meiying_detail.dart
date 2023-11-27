@@ -5,23 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_note/common/constant.dart';
 import 'package:flutter_note/common/model/reptile/mei_ying.dart';
 import 'package:flutter_note/common/model/reptile/mei_ying_detail.dart';
-import 'package:flutter_note/common/model/reptile/momo.dart';
-import 'package:flutter_note/common/model/reptile/momo_detail.dart';
 import 'package:flutter_note/common/net/reptile_service.dart';
-import 'package:flutter_note/main.dart';
 import 'package:flutter_note/widgets/derate.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:objectbox/objectbox.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
-import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:transparent_image/transparent_image.dart';
-import 'package:web_scraper/web_scraper.dart';
-import 'package:webview_flutter/webview_flutter.dart';
-import 'package:flutter_note/generated/l10n.dart';
-import '../common/db/objectbox.dart';
 import '../widgets/function_w.dart';
 
 class MeiYingDetailRoute extends StatefulWidget {
@@ -32,15 +21,12 @@ class MeiYingDetailRoute extends StatefulWidget {
 }
 
 class _MeiYingDetailRouteState extends State<MeiYingDetailRoute> {
-  final meiyingDetailBox = objectBox.store.box<MeiYingDetail>();
   List<MeiYingDetail> meiyingDetails = [];
   bool loading = false;
   int currentIndex = 0;
   int layout = 0;
   late MeiYing meiying;
   double currentOffet = 0;
-  WebScraper webScraperMomo = WebScraper();
-  // final database = Provider.of<AppDatabase>(context);
   final titleReg = new RegExp(r'\d+-\d+');
   var layoutStyle = Layout.grid.index;
 
@@ -62,40 +48,68 @@ class _MeiYingDetailRouteState extends State<MeiYingDetailRoute> {
     meiying = ModalRoute.of(context)?.settings.arguments as MeiYing;
 
     return Scaffold(
-        appBar: AppBar(
-          title: Text('${meiying.title}'),
-          leading: Builder(builder: (context) {
-            return IconButton(
-              icon: const Icon(Icons.arrow_back,
-                  color: Colors.lightGreen), //自定义图标
-              onPressed: () {
-                if (layout == 0) {
-                  Navigator.of(context).pop();
-                } else {
-                  layout = 0;
-                  setState(() {});
-                }
-              },
-            );
-          }),
-          actions: [
-            IconButton(
-                onPressed: _switchLayoutGrid,
-                icon: Icon(
-                    layoutStyle == Layout.list.index
-                        ? Icons.list
-                        : Icons.grid_on,
-                    color: Colors.lightGreen)),
-          ],
-        ),
-        body: layout == 0 ? _bodyDetail() : _photoView());
+      body: PopScope(
+          canPop: layout == 0,
+          onPopInvoked: (bool pop) {
+            if (!pop) {
+              layout = 0;
+              setState(() {});
+            }
+          },
+          child: nestedBody()),
+    );
+  }
+
+  Widget nestedBody() {
+    return NestedScrollView(
+      headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+        return <Widget>[
+          SliverOverlapAbsorber(
+            handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+            sliver: SliverAppBar(
+              titleSpacing: 0,
+              leading: Builder(builder: (context) {
+                return IconButton(
+                  icon: const Icon(Icons.arrow_back,
+                      color: Colors.lightGreen), //自定义图标
+                  onPressed: () {
+                    if (layout == 0) {
+                      Navigator.of(context).pop();
+                    } else {
+                      layout = 0;
+                      setState(() {});
+                    }
+                  },
+                );
+              }),
+              title: Text(meiying.title!),
+              pinned: false,
+              snap: true,
+              floating: true,
+              actions: [
+                IconButton(
+                    onPressed: _switchLayoutGrid,
+                    icon: Icon(
+                        layoutStyle == Layout.list.index
+                            ? Icons.list
+                            : Icons.grid_on,
+                        color: Colors.lightGreen)),
+              ],
+            ),
+          ),
+        ];
+      },
+      body: Builder(builder: (BuildContext context) {
+        return layout == 0 ? _bodyDetail(context) : _photoView();
+      }),
+    );
   }
 
   /// 切换列表/方格/瀑布视图
   void _switchLayoutGrid() {
     if (layoutStyle == Layout.list.index) {
       layoutStyle = Layout.monsonry.index;
-    } else if (layoutStyle == Layout.monsonry.index) {
+    } else {
       layoutStyle = Layout.list.index;
     }
     Future(() async {
@@ -138,29 +152,29 @@ class _MeiYingDetailRouteState extends State<MeiYingDetailRoute> {
     );
   }
 
-  Widget _bodyDetail() {
+  Widget _bodyDetail(BuildContext context) {
     if (Platform.isAndroid) {
       //处理因SliveApp存在ListView或GridView无法感知头部高度的问题
       return LoadingOverlay(
-          isLoading: loading,
-          child: CustomScrollView(
-            slivers: <Widget>[
-              SliverOverlapInjector(
-                handle:
-                    NestedScrollView.sliverOverlapAbsorberHandleFor(context),
-              ),
-              SliverMasonryGrid(
-                  delegate: SliverChildBuilderDelegate(
-                    (context, index) {
-                      return _itemDetail(index);
-                    },
-                    childCount: meiyingDetails.length,
-                  ),
-                  gridDelegate: SliverSimpleGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: layoutStyle == 0 ? 1 : 2,
-                  )),
-            ],
-          ));
+        isLoading: loading,
+        child: CustomScrollView(
+          slivers: <Widget>[
+            SliverOverlapInjector(
+              handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+            ),
+            SliverMasonryGrid(
+                delegate: SliverChildBuilderDelegate(
+                  (context, index) {
+                    return _itemDetail(index);
+                  },
+                  childCount: meiyingDetails.length,
+                ),
+                gridDelegate: SliverSimpleGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: layoutStyle == 0 ? 1 : 2,
+                )),
+          ],
+        ),
+      );
     }
     return LoadingOverlay(
       isLoading: loading,
@@ -229,7 +243,7 @@ class _MeiYingDetailRouteState extends State<MeiYingDetailRoute> {
                     )
                     // FadeInImage.memoryNetwork(
                     //   placeholder: kTransparentImage,
-                    //   image: momoDetails[index].imgUrl!,
+                    //   image: meiyingDetails[index].imgUrl!,
                     // ),
                   ])
                 ],

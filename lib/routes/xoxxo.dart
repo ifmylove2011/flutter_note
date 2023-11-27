@@ -3,32 +3,33 @@ import 'dart:io';
 import 'package:fast_cached_network_image/fast_cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_note/common/constant.dart';
-import 'package:flutter_note/common/model/reptile/momo.dart';
+import 'package:flutter_note/common/model/reptile/xoxo.dart';
 import 'package:flutter_note/common/net/reptile_service.dart';
+import 'package:flutter_note/main.dart';
 import 'package:flutter_note/widgets/derate.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
 import '../generated/l10n.dart';
 import '../widgets/function_w.dart';
 
-class MomoRoute extends StatefulWidget {
+class XoxoRoute extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return _MomoRouteState();
+    return _XoxoRouteState();
   }
 }
 
-class _MomoRouteState extends State<MomoRoute> {
+class _XoxoRouteState extends State<XoxoRoute> {
   late ScrollController _scrollController;
-  List<Momo> momos = [];
+  final xoxoBox = objectBox.store.box<Xoxo>();
+  List<Xoxo> xoxos = [];
   int page = 1;
   bool loading = false;
-  // final database = Provider.of<AppDatabase>(context);
 
   @override
   void initState() {
     loading = true;
-    requestMomo();
+    requestXoxo();
     _scrollController = ScrollController();
     _scrollController.addListener(() {
       if (_scrollController.position.extentAfter == 0) {
@@ -61,7 +62,7 @@ class _MomoRouteState extends State<MomoRoute> {
                   },
                 );
               }),
-              title: Text(S.current.momo),
+              title: Text(S.current.xoxo),
               pinned: false,
               snap: true,
               floating: true,
@@ -93,7 +94,7 @@ class _MomoRouteState extends State<MomoRoute> {
                     (context, index) {
                       return _item(index);
                     },
-                    childCount: momos.length,
+                    childCount: xoxos.length,
                   ),
                   gridDelegate:
                       const SliverSimpleGridDelegateWithFixedCrossAxisCount(
@@ -114,7 +115,7 @@ class _MomoRouteState extends State<MomoRoute> {
         itemBuilder: (BuildContext context, int index) {
           return _item(index);
         },
-        itemCount: momos.length,
+        itemCount: xoxos.length,
       ),
     );
   }
@@ -122,7 +123,7 @@ class _MomoRouteState extends State<MomoRoute> {
   Future _loadMore() async {
     print("loading more ...");
     page++;
-    requestMomo();
+    requestXoxo();
   }
 
   Widget _item(int index) {
@@ -141,7 +142,7 @@ class _MomoRouteState extends State<MomoRoute> {
                     style: const TextStyle(
                         fontWeight: FontWeight.bold, fontSize: 11),
                     textAlign: TextAlign.start,
-                    momos[index].title!,
+                    xoxos[index].title!,
                   ),
                   Stack(children: <Widget>[
                     const Column(
@@ -153,7 +154,7 @@ class _MomoRouteState extends State<MomoRoute> {
                       ],
                     ),
                     FastCachedImage(
-                      url: momos[index].postUrl!,
+                      url: xoxos[index].postUrl!,
                       fit: BoxFit.cover,
                       fadeInDuration: const Duration(seconds: 1),
                       errorBuilder: (context, exception, stacktrace) {
@@ -180,51 +181,33 @@ class _MomoRouteState extends State<MomoRoute> {
                     //   placeholder: kTransparentImage,
                     //   image: momos[index].postUrl!,
                     // ),
-                  ]),
-                  Row(
-                    children: [
-                      Text(
-                        style: const TextStyle(color: Colors.black54),
-                        textAlign: TextAlign.start,
-                        momos[index].dataPid.toString(),
-                        textScaleFactor: 0.8,
-                      ),
-                      const Spacer(),
-                      Text(
-                        style: const TextStyle(color: Colors.black54),
-                        textAlign: TextAlign.end,
-                        momos[index].descNum!,
-                        textScaleFactor: 0.8,
-                      ),
-                    ],
-                  )
+                  ])
                 ],
               ),
             ),
             onTap: () {
-              print(momos[index]);
-              Navigator.pushNamed(context, RouteNames.MOMO_DETAIL,
-                  arguments: momos[index]);
+              print(xoxos[index]);
+              Navigator.pushNamed(context, RouteNames.XOXO_DETAIL,
+                  arguments: xoxos[index]);
             },
           )),
     );
   }
 
-  void requestMomo() {
+  void requestXoxo() {
     Future(() async {
       setState(() {
         loading = true;
       });
-      // List<Momo> momos = await momoBox.getAllAsync();
-      // debugPrint("in db momo.size=${momos.length}");
-      // return await webScraperMomo.loadFullURL('https://momotk.uno/');
-      return await ReptileService().getMomo(page);
+      return await ReptileService().getXoxo(page);
+      // return await ReptileService().getMeiYingLocal();
     }).then((value) {
-      List<Momo> temp = value!.toList();
-      temp.addAll(momos);
-      momos = temp.toSet().toList();
-      momos.sort((a, b) => b.dataPid!.compareTo(a.dataPid!));
-      debugPrint("momo.size=${momos.length}");
+      List<Xoxo> temp = value!.toList();
+      temp.addAll(xoxos);
+      xoxos = temp.toSet().toList();
+      xoxos.sort((a, b) => b.id!.compareTo(a.id!));
+      // print(meiyings.toString());
+      debugPrint("xoxos.size=${xoxos.length}");
       setState(() {
         loading = false;
       });

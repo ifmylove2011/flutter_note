@@ -18,6 +18,8 @@ import 'package:flutter_note/routes/momo.dart';
 import 'package:flutter_note/routes/news_detail.dart';
 import 'package:flutter_note/routes/note_detail.dart';
 import 'package:flutter_note/routes/web.dart';
+import 'package:flutter_note/routes/xoxo_detail.dart';
+import 'package:flutter_note/routes/xoxxo.dart';
 import 'package:flutter_note/widgets/function_w.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:path_provider/path_provider.dart';
@@ -30,16 +32,20 @@ GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 Future<void> main() async {
   HttpOverrides.global = MyHttpOverrides();
   // DBM().initDB();
-  WidgetsFlutterBinding.ensureInitialized;
+  WidgetsFlutterBinding.ensureInitialized();
   objectBox = await ObjectBox.create();
+
   if (Platform.isWindows) {
     final io.Directory cacheDir = await getApplicationDocumentsDirectory();
     String imageCachePath = p.join(cacheDir.path, "imageCache");
     await FastCachedImageConfig.init(
         subDir: imageCachePath, clearCacheAfter: const Duration(days: 15));
+  } else {
+    await FastCachedImageConfig.init(clearCacheAfter: const Duration(days: 15));
   }
 
   runApp(const NoteApp());
+
   if (Platform.isAndroid) {
     //设置Android头部的导航栏透明
     SystemUiOverlayStyle systemUiOverlayStyle =
@@ -85,6 +91,8 @@ class NoteApp extends StatelessWidget {
         RouteNames.MOMO_DETAIL: (context) => MomoDetailRoute(),
         RouteNames.MEIYING: (context) => MeiYingRoute(),
         RouteNames.MEIYING_DETAIL: (context) => MeiYingDetailRoute(),
+        RouteNames.XOXO: (context) => XoxoRoute(),
+        RouteNames.XOXO_DETAIL: (context) => XoxoDetailRoute(),
       },
     ));
   }
